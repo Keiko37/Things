@@ -38,8 +38,6 @@
         </span>
       </button>
       <input
-        :max="setMaxValue"
-        :min="setMinValue"
         v-model="value"
         class="setting__number-input"
         step="1"
@@ -148,10 +146,14 @@ export default {
     },
     changeNumber(boolean) {
       if (boolean) {
-        this.value++;
+        return this.subsettingGroup.title === 'pomodoro' && this.value >= 99
+          ? this.value
+          : ++this.value;
       }
       if (!boolean) {
-        this.value--;
+        return this.subsettingGroup.title === 'pomodoro' && this.value <= 1
+          ? this.value
+          : --this.value;
       }
       this.changeSetting(
         { type: 'number' },
