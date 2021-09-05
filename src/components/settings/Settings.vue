@@ -56,6 +56,7 @@ export default {
   user-select: none;
   flex-direction: column;
   position: absolute;
+  z-index: 10;
   right: 3%;
   top: 8%;
   min-width: 290px;
