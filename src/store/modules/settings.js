@@ -186,8 +186,8 @@ export default {
         foundSetting.selectedValue = newValue;
       }
     },
-    toggleClockVisible(state) {
-      state.clockVisible = state.clockVisible ? false : true;
+    setClockVisible(state, newValue) {
+      state.clockVisible = newValue;
     },
     setPomodoroToggle(state, settingObj) {
       const foundGroup = state.appSettings.find(
@@ -219,8 +219,9 @@ export default {
       context.commit('setSetting', settingObj);
     },
     timerClockVisible(context) {
-      context.commit('toggleClockVisible');
-      setTimeout(() => context.commit('toggleClockVisible'), 2000);
+      context.commit('setClockVisible', false);
+      context.commit('setClockVisible', true);
+      setTimeout(() => context.commit('setClockVisible', false), 2000);
     },
     setPomodoroToggle(context, settingObj) {
       context.commit('setPomodoroToggle', settingObj);
