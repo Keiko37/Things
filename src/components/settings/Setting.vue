@@ -76,18 +76,6 @@ export default {
   },
   computed: {
     ...mapGetters(['getAppSettings']),
-    setMaxValue() {
-      if (this.subsettingGroup.title === 'pomodoro') {
-        return 99;
-      }
-      return undefined;
-    },
-    setMinValue() {
-      if (this.subsettingGroup.title === 'pomodoro') {
-        return 1;
-      }
-      return 0;
-    },
   },
   methods: {
     ...mapActions(['updateSetting', 'timerClockVisible']),
