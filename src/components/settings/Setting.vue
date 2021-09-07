@@ -29,6 +29,7 @@
         <span class="toggle-handler"></span>
       </label>
     </div>
+
     <div v-if="setting.type === 'number'" class="setting__number">
       <button @click="changeNumber(false)" class="setting__number-button">
         <span
@@ -81,7 +82,8 @@ export default {
     ...mapActions(['updateSetting', 'timerClockVisible']),
     changeSetting(event, group, settingTitle, subsettingGroup) {
       let settingObj;
-      if (event.type === 'change') {
+
+      if (this.setting.type === 'toggle') {
         settingObj = {
           newValue: event.target.checked,
           groupOfSettings: group,
@@ -90,14 +92,16 @@ export default {
         };
       }
 
-      if (event.type === 'number') {
+      if (this.setting.type === 'number') {
         settingObj = {
           newValue: this.value,
           groupOfSettings: group,
           settingName: settingTitle,
           subsettingGroup: subsettingGroup,
         };
-      } else {
+      }
+
+      if (this.setting.type === 'multiple') {
         settingObj = {
           newValue: event.target.value,
           groupOfSettings: group,
@@ -110,12 +114,18 @@ export default {
         if (Notification.permission === 'granted') {
           this.updateSetting(settingObj);
         }
+
+        if (Notification.permission === 'denied') {
+          setTimeout(() => (event.target.checked = false), 400);
+        }
+
         if (Notification.permission === 'default') {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
               this.updateSetting(settingObj);
             }
             if (permission === 'denied') {
+              event.target.checked = false;
               this.updateSetting({
                 newValue: false,
                 groupOfSettings: group,
@@ -125,23 +135,30 @@ export default {
             }
           });
         }
+
         return;
       }
+
       this.updateSetting(settingObj);
+
       if (this.group.title === 'clock') {
         this.timerClockVisible();
       }
     },
     changeNumber(boolean) {
-      if (boolean) {
-        return this.subsettingGroup.title === 'pomodoro' && this.value >= 99
-          ? this.value
-          : ++this.value;
+      if (
+        boolean &&
+        this.subsettingGroup.title === 'pomodoro' &&
+        this.value <= 99
+      ) {
+        ++this.value;
       }
-      if (!boolean) {
-        return this.subsettingGroup.title === 'pomodoro' && this.value <= 1
-          ? this.value
-          : --this.value;
+      if (
+        !boolean &&
+        this.subsettingGroup.title === 'pomodoro' &&
+        this.value > 1
+      ) {
+        --this.value;
       }
       this.changeSetting(
         { type: 'number' },

@@ -50,12 +50,12 @@ export default {
               },
               {
                 title: 'focus timer duration',
-                selectedValue: 1,
+                selectedValue: 25,
                 type: 'number',
               },
               {
                 title: 'rest timer duration',
-                selectedValue: 1,
+                selectedValue: 5,
                 type: 'number',
               },
               {
@@ -121,6 +121,16 @@ export default {
     getRestTimerMinutes(state, getters) {
       return getters.getPomodoroSettingsList.find(
         (subsetting) => subsetting.title === 'rest timer duration'
+      ).selectedValue;
+    },
+    getLongRestTimerMinutes(state, getters) {
+      return getters.getPomodoroSettingsList.find(
+        (subsetting) => subsetting.title === 'long rest timer duration'
+      ).selectedValue;
+    },
+    getPomodorosBeforeLongRest(state, getters) {
+      return getters.getPomodoroSettingsList.find(
+        (subsetting) => subsetting.title === 'a long break in every one'
       ).selectedValue;
     },
     getAlarmOn(state, getters) {
