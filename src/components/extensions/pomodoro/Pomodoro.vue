@@ -132,6 +132,8 @@ export default {
       'getLoopTimerOn',
       'getFocusTimerMinutes',
       'getRestTimerMinutes',
+      'getLongRestTimerMinutes',
+      'getPomodorosBeforeLongRest',
     ]),
   },
   data() {
@@ -142,6 +144,7 @@ export default {
       timerValue: '00:00',
       timerFinished: true,
       timerMode: null,
+      pomodorosBeforeLongRest: 0,
     };
   },
   methods: {
@@ -173,12 +176,23 @@ export default {
         this.timerMode = 'focus';
       }
 
-      const minutes =
+      if (this.timerMode === 'focus') {
+        if (this.pomodorosBeforeLongRest === 0) {
+          this.pomodorosBeforeLongRest = this.getPomodorosBeforeLongRest;
+        }
+        this.pomodorosBeforeLongRest -= 1;
+      }
+
+      let minutes =
         this.timerMode === 'focus'
           ? this.getFocusTimerMinutes
           : this.getRestTimerMinutes;
 
-      this.timer(minutes);
+      if (this.pomodorosBeforeLongRest === 0 && this.timerMode === 'rest') {
+        this.timer(this.getLongRestTimerMinutes);
+      } else {
+        this.timer(minutes);
+      }
     },
     async timer(mins) {
       const startTimestamp = new Date().getTime();
