@@ -4,7 +4,8 @@ export default {
     clockVisible: false,
     checkedNav: null,
     checkedSubsetting: false,
-    appSettings: [
+    // subsettingGroupChecked: {},
+    defaultSettings: [
       {
         id: 1,
         title: 'clock',
@@ -79,8 +80,12 @@ export default {
         settings: [],
       },
     ],
+    appSettings: [],
   }),
   getters: {
+    getDefaultSettings(state) {
+      return state.defaultSettings;
+    },
     getAppSettings(state) {
       return state.appSettings;
     },
@@ -145,10 +150,18 @@ export default {
     },
   },
   mutations: {
+    setAppSettings(state, settings) {
+      state.appSettings = settings;
+    },
     changeIsSettings(state) {
       state.isSettings = !state.isSettings;
     },
     setNavChecked(state, idx) {
+      // debugger;
+      if (idx === undefined && state.checkedNav >= 0) {
+        state.appSettings[state.checkedNav].groupChecked = false;
+        return;
+      }
       if (state.checkedNav !== null) {
         state.appSettings[state.checkedNav].groupChecked = false;
       }
@@ -216,6 +229,9 @@ export default {
     },
   },
   actions: {
+    setAppSettings(context, settingsFromLocalStorage) {
+      context.commit('setAppSettings', settingsFromLocalStorage);
+    },
     toggleSetting(context) {
       context.commit('changeIsSettings');
     },
@@ -227,6 +243,20 @@ export default {
     },
     updateSetting(context, settingObj) {
       context.commit('setSetting', settingObj);
+      context.dispatch('selectNav');
+      localStorage.setItem(
+        'appSettings',
+        JSON.stringify(context.getters.getAppSettings)
+      );
+      const subsettingIdx = context.state.checkedSubsetting;
+      const settingIdx = context.state.checkedNav;
+      context.dispatch('selectNav', settingIdx);
+      if (settingObj.subsettingGroup) {
+        context.dispatch('selectSubsetting', {
+          group: context.state.appSettings[settingIdx],
+          subsettingIndex: subsettingIdx,
+        });
+      }
     },
     timerClockVisible(context) {
       context.commit('setClockVisible', false);
