@@ -4,11 +4,12 @@
     class="material-icons-round material-icons md-light icon-btn"
     >extension</span
   >
-  <div v-if="getIsExtensions" class="extensions">
+  <div class="extensions">
     <Extension
-      v-for="extension in getExtensionsIcons"
+      v-for="(extension, idx) in getExtensionsIcons"
       :key="extension.id"
       :extension="extension"
+      :orderIdx="idx"
     />
   </div>
 </template>
@@ -23,7 +24,7 @@ export default {
     Extension,
   },
   computed: {
-    ...mapGetters(['getIsExtensions', 'getExtensionsIcons']),
+    ...mapGetters(['getExtensionsIcons']),
   },
   methods: {
     ...mapActions(['toggleExtensions']),
@@ -33,6 +34,8 @@ export default {
 
 <style lang="scss" scoped>
 .extensions {
+  display: flex;
+  max-width: 40%;
   user-select: none;
   color: $text-color-secondary;
   position: absolute;

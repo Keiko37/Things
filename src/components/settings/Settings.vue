@@ -4,30 +4,31 @@
     class="icon-btn material-icons material-icons-round md-light"
     >settings</span
   >
+  <transition name="animation">
+    <div v-if="getIsSettings" class="settings">
+      <div class="settings__header">
+        <h1 class="settings__title">Settings</h1>
+      </div>
+      <div class="settings__main">
+        <ul class="settings__nav">
+          <SettingsNav
+            v-for="(group, idx) in getAppSettings"
+            :key="group.id"
+            :group="group"
+            :indexInArray="idx"
+          />
+        </ul>
 
-  <div v-if="getIsSettings" class="settings">
-    <div class="settings__header">
-      <h1 class="settings__title">Settings</h1>
-    </div>
-    <div class="settings__main">
-      <ul class="settings__nav">
-        <SettingsNav
-          v-for="(group, idx) in getAppSettings"
-          :key="group.id"
-          :group="group"
-          :indexInArray="idx"
-        />
-      </ul>
-
-      <div class="settings__view">
-        <SettingsView
-          v-for="group in getAppSettings"
-          :key="group.id"
-          :group="group"
-        />
+        <div class="settings__view">
+          <SettingsView
+            v-for="group in getAppSettings"
+            :key="group.id"
+            :group="group"
+          />
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -101,5 +102,20 @@ export default {
     display: flex;
     flex-direction: column;
   }
+}
+
+.animation-enter-active,
+.animation-leave-active {
+  transition: all 0.2s;
+}
+.animation-enter-from,
+.animation-leave-to {
+  transform: scale(0.95);
+  opacity: 0;
+}
+.animation-leave-from,
+.animation-enter-to {
+  transform: scale(1);
+  opacity: 1;
 }
 </style>

@@ -6,33 +6,38 @@
   >
     {{ group.title }}
   </li>
-  <ul v-if="group.subSettings && group.groupChecked" class="nav__subsettings">
-    <li
-      :class="{
-        'settings-nav-item-checked':
-          getCheckedNav === indexInArray && getCheckedSubsetting === idx,
-      }"
-      @click="selectSubsetting({ group: group, subsettingIndex: idx })"
-      class="nav__item nav__subsetting"
+
+  <ul class="nav__subsettings">
+    <SubsettingNav
       v-for="(subsetting, idx) in group.subSettings"
       :key="subsetting.title"
-    >
-      {{ subsetting.title }}
-    </li>
+      :orderIdx="idx"
+      :subsetting="subsetting"
+      :group="group"
+      :indexInArray="indexInArray"
+    />
   </ul>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import SubsettingNav from './SubsettingNav.vue';
 
 export default {
   name: 'SettingsNav',
+  components: {
+    SubsettingNav,
+  },
   props: {
     group: Object,
     indexInArray: Number,
   },
   computed: {
     ...mapGetters(['getCheckedNav', 'getCheckedSubsetting']),
+    getTransitionSeconds() {
+      const resultNumber = this.orderIdx * 0.05;
+      return resultNumber + 's';
+    },
   },
   methods: {
     ...mapActions(['selectNav', 'selectSubsetting']),
