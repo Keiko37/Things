@@ -5,7 +5,7 @@
     >settings</span
   >
   <transition name="animation">
-    <div v-if="getIsSettings" class="settings">
+    <div v-if="getIsSettings" class="settings scroll-ui">
       <div class="settings__header">
         <h1 class="settings__title">Settings</h1>
       </div>
@@ -69,15 +69,6 @@ export default {
   border-radius: 10px 0 10px 10px;
   padding: 20px;
   color: $text-color-secondary;
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-    background-color: transparent;
-    width: 5px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(129, 129, 129, 0.2);
-    border-radius: 10px;
-  }
 
   &__title {
     font-size: 3rem;

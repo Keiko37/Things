@@ -85,3 +85,15 @@
     border-width: 6px 6px 0 6px;
   }
 }
+
+.scroll-ui {
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    background-color: transparent;
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(129, 129, 129, 0.2);
+    border-radius: 10px;
+  }
+}
