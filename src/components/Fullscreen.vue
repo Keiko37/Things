@@ -2,13 +2,13 @@
   <span
     v-if="!getFullscreen"
     @click="toggleFullscreen"
-    class="icon-btn material-icons-round md-light"
+    class="material-icons-round material-icons md-light icon-btn"
     >fullscreen</span
   >
   <span
     v-else
     @click="toggleFullscreen"
-    class="icon-btn material-icons-round md-light"
+    class="material-icons-round material-icons md-light icon-btn"
     >fullscreen_exit</span
   >
 </template>
