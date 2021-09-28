@@ -175,6 +175,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// disable arrows in input number
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+input[type='number']:hover,
+input[type='number']:focus {
+  -moz-appearance: number-input;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .setting {
   display: flex;
   justify-content: space-between;
@@ -204,13 +223,15 @@ export default {
   }
   &__number {
     position: relative;
+    display: flex;
   }
   &__number-input {
     background-color: transparent;
-    position: absolute;
     color: $text-color;
-    width: 2rem;
+    width: 1.2rem;
     height: 2rem;
+    margin: 0 2px;
+    text-align: center;
     cursor: default;
     user-select: none;
   }
@@ -218,16 +239,13 @@ export default {
     background-color: transparent;
     border-radius: 50%;
     height: 100%;
-    width: 2rem;
-    height: 2rem;
-    &:first-child {
-      margin-right: 5px;
-    }
-    &:last-child {
-      margin-left: 10px;
-    }
+    width: 1.6rem;
+    height: 1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     &:hover {
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.1);
     }
   }
 }
