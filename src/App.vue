@@ -2,8 +2,10 @@
   <router-view />
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
+<script setup lang="ts"></script>
+
+<!-- <script lang="ts">
+// import { mapActions, mapGetters } from 'vuex'
 
 export default {
   computed: {
@@ -13,29 +15,23 @@ export default {
     ...mapActions(['setAppSettings']),
   },
   mounted() {
-    let settingsType;
+    let settingsType
     try {
-      settingsType = typeof JSON.parse(localStorage.getItem('appSettings'));
+      settingsType = typeof JSON.parse(localStorage.getItem('appSettings'))
     } catch (e) {
-      localStorage.setItem(
-        'appSettings',
-        JSON.stringify(this.getDefaultSettings)
-      );
+      localStorage.setItem('appSettings', JSON.stringify(this.getDefaultSettings))
     }
 
     if (!localStorage.getItem('appSettings') || settingsType !== 'object') {
-      localStorage.setItem(
-        'appSettings',
-        JSON.stringify(this.getDefaultSettings)
-      );
+      localStorage.setItem('appSettings', JSON.stringify(this.getDefaultSettings))
     }
     if (this.getAppSettings.length === 0) {
-      const settingsLS = JSON.parse(localStorage.getItem('appSettings'));
-      this.setAppSettings(settingsLS);
+      const settingsLS = JSON.parse(localStorage.getItem('appSettings'))
+      this.setAppSettings(settingsLS)
     }
   },
-};
-</script>
+}
+</script> -->
 
 <style lang="scss">
 // @import 'assets/css/null.css';

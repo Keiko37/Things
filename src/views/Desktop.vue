@@ -16,15 +16,15 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
-import Clock from '@/components/Clock';
-import Fullscreen from '@/components/Fullscreen';
-import Settings from '@/components/settings/Settings';
-import Bookmarks from '@/components/bookmarks/Bookmarks';
+<script lang="ts">
+import { mapActions, mapGetters } from 'vuex'
+import Clock from '@/components/Clock'
+import Fullscreen from '@/components/Fullscreen'
+import Settings from '@/components/settings/Settings'
+import Bookmarks from '@/components/bookmarks/Bookmarks'
 
-import Extensions from '@/components/extensions/Extensions';
-import Pomodoro from '@/components/extensions/pomodoro/Pomodoro';
+import Extensions from '@/components/extensions/Extensions'
+import Pomodoro from '@/components/extensions/pomodoro/Pomodoro'
 
 export default {
   name: 'Desktop',
@@ -35,31 +35,28 @@ export default {
   methods: {
     ...mapActions(['toggleSetting', 'toggleBookmarks']),
     focusWindow(event, classForFinding, stopClass) {
-      let classFind = false;
-      let currentElement = event.target;
-      while (
-        !Array(...currentElement.classList).includes(stopClass) &&
-        !classFind
-      ) {
+      let classFind = false
+      let currentElement = event.target
+      while (!Array(...currentElement.classList).includes(stopClass) && !classFind) {
         if (Array(...currentElement.classList).includes(classForFinding)) {
-          return true;
+          return true
         }
-        currentElement = currentElement.parentElement;
+        currentElement = currentElement.parentElement
       }
-      return false;
+      return false
     },
     closeWindows(event) {
-      let settingsOnFocus = this.focusWindow(event, 'settings', 'desktop');
-      let bookmarksOnFocus = this.focusWindow(event, 'bookmarks', 'desktop');
+      let settingsOnFocus = this.focusWindow(event, 'settings', 'desktop')
+      let bookmarksOnFocus = this.focusWindow(event, 'bookmarks', 'desktop')
       if (!settingsOnFocus && this.getIsSettings) {
-        this.toggleSetting();
+        this.toggleSetting()
       }
       if (!bookmarksOnFocus && this.getIsBookmarks) {
-        this.toggleBookmarks();
+        this.toggleBookmarks()
       }
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

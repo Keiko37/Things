@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import SubsettingNav from './SubsettingNav.vue';
+import { mapActions, mapGetters } from 'vuex'
+import SubsettingNav from './SubsettingNav.vue'
 
 export default {
   name: 'SettingsNav',
@@ -35,14 +35,14 @@ export default {
   computed: {
     ...mapGetters(['getCheckedNav', 'getCheckedSubsetting']),
     getTransitionSeconds() {
-      const resultNumber = this.orderIdx * 0.05;
-      return resultNumber + 's';
+      const resultNumber = this.orderIdx * 0.05
+      return resultNumber + 's'
     },
   },
   methods: {
     ...mapActions(['selectNav', 'selectSubsetting']),
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
