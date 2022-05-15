@@ -370,6 +370,7 @@ export const useSettingsStore = defineStore('settings', () => {
     setClockVisible(true)
     setTimeout(() => setClockVisible(false), 2000)
   }
+
   return {
     settingsState,
     getClockSize,
@@ -383,11 +384,12 @@ export const useSettingsStore = defineStore('settings', () => {
     getLoopTimerOn,
     setAppSettings,
     toggleIsSettings,
+    setNavChecked,
     selectSubsetting,
     setSetting,
     setClockVisible,
     setPomodoroSetting,
     timerClockVisible,
-    setNavChecked,
+    updateSettings,
   }
 })
