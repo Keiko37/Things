@@ -1,37 +1,36 @@
+<script lang="ts">
+import { onMounted, toRefs } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '@/stores/settings'
+import type { SettingsGroupKind } from '@/types/SettingsState'
+
+const settingsStore = useSettingsStore()
+const { settingsState } = storeToRefs(settingsStore)
+const { appSettings, defaultSettings } = toRefs(settingsState.value)
+
+onMounted(() => {
+  let settingsFromStorage: string | null = localStorage.getItem('appSettings')
+  const parsedSettings: SettingsGroupKind[] | null =
+    settingsFromStorage !== null ? JSON.parse(settingsFromStorage) : null
+
+  if (
+    parsedSettings === null ||
+    typeof parsedSettings !== 'object' ||
+    (Array.isArray(parsedSettings) && parsedSettings.length === 0)
+  ) {
+    localStorage.setItem('appSettings', JSON.stringify(defaultSettings.value))
+  }
+
+  if (appSettings.value.length === 0) {
+    settingsFromStorage = localStorage.getItem('appSettings')
+    appSettings.value = settingsFromStorage ? JSON.parse(settingsFromStorage) : defaultSettings.value
+  }
+})
+</script>
+
 <template>
   <router-view />
 </template>
-
-<script setup lang="ts"></script>
-
-<!-- <script lang="ts">
-// import { mapActions, mapGetters } from 'vuex'
-
-export default {
-  computed: {
-    ...mapGetters(['getDefaultSettings', 'getAppSettings']),
-  },
-  methods: {
-    ...mapActions(['setAppSettings']),
-  },
-  mounted() {
-    let settingsType
-    try {
-      settingsType = typeof JSON.parse(localStorage.getItem('appSettings'))
-    } catch (e) {
-      localStorage.setItem('appSettings', JSON.stringify(this.getDefaultSettings))
-    }
-
-    if (!localStorage.getItem('appSettings') || settingsType !== 'object') {
-      localStorage.setItem('appSettings', JSON.stringify(this.getDefaultSettings))
-    }
-    if (this.getAppSettings.length === 0) {
-      const settingsLS = JSON.parse(localStorage.getItem('appSettings'))
-      this.setAppSettings(settingsLS)
-    }
-  },
-}
-</script> -->
 
 <style lang="scss">
 // @import 'assets/css/null.css';
