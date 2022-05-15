@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Desktop',
+      name: 'desktop',
       component: Desktop,
     },
     // {
