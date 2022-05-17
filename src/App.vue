@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import { onMounted, toRefs } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
@@ -23,7 +23,9 @@ onMounted(() => {
 
   if (appSettings.value.length === 0) {
     settingsFromStorage = localStorage.getItem('appSettings')
-    appSettings.value = settingsFromStorage ? JSON.parse(settingsFromStorage) : defaultSettings.value
+    appSettings.value = settingsFromStorage
+      ? JSON.parse(settingsFromStorage)
+      : defaultSettings.value
   }
 })
 </script>

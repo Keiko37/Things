@@ -1,44 +1,41 @@
+<script setup lang="ts">
+import type { SubsettingsGroup, SettingsGroup } from '@/types/SettingsState'
+import { useSettingsStore } from '@/stores/settings'
+import { storeToRefs } from 'pinia'
+import { toRefs } from 'vue'
+
+const props = defineProps<{
+  subsetting: SettingsGroup
+  orderIdx: number
+  group: SubsettingsGroup
+  indexInArray: number
+}>()
+
+const appSettings = useSettingsStore()
+const { settingsState } = storeToRefs(appSettings)
+const { checkedNavIndex, checkedSubsettingIndex } = toRefs(settingsState.value)
+
+const getTransitionSeconds = () => {
+  const resultNumber = props.orderIdx * 0.05
+  return resultNumber + 's'
+}
+</script>
+
 <template>
   <transition :style="{ 'transition-delay': getTransitionSeconds }" name="item">
     <li
       v-if="group.subSettings && group.groupChecked"
       :class="{
         'settings-nav-item-checked':
-          getCheckedNav === indexInArray && getCheckedSubsetting === orderIdx,
+          checkedNavIndex === indexInArray && checkedSubsettingIndex === orderIdx,
       }"
-      @click="
-        selectSubsetting({ group: group, subsettingIndex: this.orderIdx })
-      "
+      @click="appSettings.selectSubsetting(group, orderIdx)"
       class="nav__item nav__subsetting"
     >
       {{ subsetting.title }}
     </li>
   </transition>
 </template>
-
-<script>
-import { mapActions, mapGetters } from 'vuex';
-
-export default {
-  name: 'SubsettingNav',
-  props: {
-    subsetting: Object,
-    orderIdx: Number,
-    group: Object,
-    indexInArray: Number,
-  },
-  computed: {
-    ...mapGetters(['getCheckedNav', 'getCheckedSubsetting']),
-    getTransitionSeconds() {
-      const resultNumber = this.orderIdx * 0.05;
-      return resultNumber + 's';
-    },
-  },
-  methods: {
-    ...mapActions(['selectSubsetting']),
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 .item-enter-active,

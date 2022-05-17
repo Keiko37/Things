@@ -21,7 +21,7 @@ export const useSettingsStore = defineStore('settings', () => {
     isSettings: false,
     isClockVisible: false,
     clockVisibleTimerId: 0,
-    checkedNavIdx: null,
+    checkedNavIndex: null,
     checkedSubsettingIndex: null,
     appSettings: [],
     defaultSettings: [
@@ -103,7 +103,9 @@ export const useSettingsStore = defineStore('settings', () => {
   })
 
   const getClockSize = computed<ClockSize>(() => {
-    const clockSettings: SettingsGroup | undefined = settingsState.appSettings.find((group) => group.title === 'clock')
+    const clockSettings: SettingsGroup | undefined = settingsState.appSettings.find(
+      (group) => group.title === 'clock'
+    )
     if (!clockSettings) {
       throw new Error('getClockSize: "clock" settings not found.')
     }
@@ -135,7 +137,9 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const getPomodoroSettingsList = computed<SettingKind[]>(() => {
     // TODO: replace in external module
-    const extensionsSettings = settingsState.appSettings.find((group) => group.title === 'extensions')
+    const extensionsSettings = settingsState.appSettings.find(
+      (group) => group.title === 'extensions'
+    )
     if (!extensionsSettings || !isSubsettingsGroup(extensionsSettings)) {
       throw new Error('getPomodoroSettingsList: "extensions" settings not found.')
     }
@@ -198,9 +202,8 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const getPomodorosBeforeLongRest = computed<number>(() => {
     // TODO: replace in external module
-    const pomodorosBeforeLongRestSetting: SettingKind | undefined = getPomodoroSettingsList.value.find(
-      (setting) => setting.title === 'a long break in every one'
-    )
+    const pomodorosBeforeLongRestSetting: SettingKind | undefined =
+      getPomodoroSettingsList.value.find((setting) => setting.title === 'a long break in every one')
     if (!pomodorosBeforeLongRestSetting) {
       throw new Error('getPomodorosBeforeLongRest: "pomodoros before long rest" setting not found.')
     }
@@ -248,8 +251,8 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   const setNavChecked = (idx?: number) => {
-    if (typeof settingsState.checkedNavIdx === 'number') {
-      settingsState.appSettings[settingsState.checkedNavIdx].groupChecked = false
+    if (typeof settingsState.checkedNavIndex === 'number') {
+      settingsState.appSettings[settingsState.checkedNavIndex].groupChecked = false
     }
     if (idx === undefined) {
       // if we don' have index as entry parameter so let's just uncheck nav.
@@ -257,12 +260,14 @@ export const useSettingsStore = defineStore('settings', () => {
     }
     // settingsState.isCheckedSubsetting = false // idk what's this for now
     settingsState.appSettings[idx].groupChecked = true
-    settingsState.checkedNavIdx = idx
+    settingsState.checkedNavIndex = idx
   }
 
   const selectSubsetting = (group: SubsettingsGroup, subsettingIndex: number) => {
     // TODO: maybe pass only the targetGroupTitle and not the whole group
-    const foundGroup = settingsState.appSettings.find((groupOfSettings) => groupOfSettings.title === group.title)
+    const foundGroup = settingsState.appSettings.find(
+      (groupOfSettings) => groupOfSettings.title === group.title
+    )
     let foundSubsetting: SettingsGroup
     if (!foundGroup) {
       throw new Error('setSubsettingsChecked: group not found.')
@@ -277,7 +282,7 @@ export const useSettingsStore = defineStore('settings', () => {
     settingsState.checkedSubsettingIndex = subsettingIndex
   }
 
-  const updateSettings = (
+  const updateSetting = (
     newValue: number | string | boolean,
     groupOfSettings: SettingsGroup,
     settingName: string,
@@ -307,7 +312,9 @@ export const useSettingsStore = defineStore('settings', () => {
     settingName: string,
     subsettingGroup: SubsettingsGroup
   ) => {
-    const foundGroup = settingsState.appSettings.find((group) => group.title === groupOfSettings.title)
+    const foundGroup = settingsState.appSettings.find(
+      (group) => group.title === groupOfSettings.title
+    )
     if (!foundGroup) {
       throw new Error('setSetting: settings group not found.')
     }
@@ -325,7 +332,9 @@ export const useSettingsStore = defineStore('settings', () => {
       (subsettings) => subsettings.title === subsettingGroup.title
     )
     if (foundSubsettingGroup) {
-      const foundSubsetting = foundSubsettingGroup.settings.find((subsetting) => subsetting.title === settingName)
+      const foundSubsetting = foundSubsettingGroup.settings.find(
+        (subsetting) => subsetting.title === settingName
+      )
       if (foundSubsetting) {
         foundSubsetting.selectedValue = newValue
       }
@@ -336,7 +345,10 @@ export const useSettingsStore = defineStore('settings', () => {
     settingsState.isClockVisible = value
   }
 
-  const setPomodoroSetting = (searchedSettingTitle: string, newValue: number | string | boolean) => {
+  const setPomodoroSetting = (
+    searchedSettingTitle: string,
+    newValue: number | string | boolean
+  ) => {
     const extensionsSettingsGroup: SettingsGroupKind | undefined = settingsState.appSettings.find(
       (setting) => setting.title === 'extensions' && isSubsettingsGroup(setting)
     )
@@ -344,15 +356,21 @@ export const useSettingsStore = defineStore('settings', () => {
       throw new Error('setPomodoroSetting: extensions settings group not found.')
     }
     if (!isSubsettingsGroup(extensionsSettingsGroup)) {
-      throw new Error('setPomodoroSetting: extensionsSettingsGroup not equal type "SubsettingsGroup".')
+      throw new Error(
+        'setPomodoroSetting: extensionsSettingsGroup not equal type "SubsettingsGroup".'
+      )
     }
 
-    const pomodoroGroup = extensionsSettingsGroup.subSettings.find((subsetting) => subsetting.title === 'pomodoro')
+    const pomodoroGroup = extensionsSettingsGroup.subSettings.find(
+      (subsetting) => subsetting.title === 'pomodoro'
+    )
     if (!pomodoroGroup) {
       throw new Error('setPomodoroSetting: pomodoro group not found.')
     }
 
-    const foundSetting = pomodoroGroup.settings.find((setting) => setting.title === searchedSettingTitle)
+    const foundSetting = pomodoroGroup.settings.find(
+      (setting) => setting.title === searchedSettingTitle
+    )
     if (!foundSetting) {
       throw new Error('setPomodoroSetting: pomodoro setting not found.')
     }
@@ -368,7 +386,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const timerClockVisible = () => {
     clearTimeout(settingsState.clockVisibleTimerId)
     setClockVisible(true)
-    setTimeout(() => setClockVisible(false), 2000)
+    settingsState.clockVisibleTimerId = setTimeout(() => setClockVisible(false), 2000)
   }
 
   return {
@@ -390,6 +408,6 @@ export const useSettingsStore = defineStore('settings', () => {
     setClockVisible,
     setPomodoroSetting,
     timerClockVisible,
-    updateSettings,
+    updateSetting,
   }
 })

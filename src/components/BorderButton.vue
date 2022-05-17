@@ -1,17 +1,8 @@
 <template>
   <button class="border-button">
-    {{ text }}
+    <slot></slot>
   </button>
 </template>
-
-<script>
-export default {
-  name: 'BorderButton',
-  props: {
-    text: String,
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 .border-button {

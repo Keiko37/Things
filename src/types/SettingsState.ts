@@ -2,7 +2,7 @@ interface SettingsState {
   isSettings: boolean
   isClockVisible: boolean
   clockVisibleTimerId: number
-  checkedNavIdx: number | null
+  checkedNavIndex: number | null
   checkedSubsettingIndex: number | null
   appSettings: SettingsGroupKind[]
   defaultSettings: SettingsGroupKind[]
@@ -40,6 +40,10 @@ interface SettingToggle extends Setting {
   selectedValue: boolean
 }
 
+function isSettingToggle(value: SettingKind): value is SettingToggle {
+  return typeof value.selectedValue === 'boolean'
+}
+
 interface SettingNumber extends Setting {
   selectedValue: number
 }
@@ -51,6 +55,10 @@ function isSettingNumber(value: SettingKind): value is SettingNumber {
 interface SettingMultiple extends Setting {
   selectedValue: string
   values: SettingMultipleValue[]
+}
+
+function isSettingMultiple(value: SettingKind): value is SettingMultiple {
+  return typeof value.selectedValue === 'string' && 'values' in value && Array.isArray(value.values)
 }
 
 interface SettingMultipleValue {
@@ -71,4 +79,4 @@ export type {
   SettingMultipleValue,
 }
 
-export { isSubsettingsGroup, isSettingsGroup, isSettingNumber }
+export { isSubsettingsGroup, isSettingsGroup, isSettingNumber, isSettingMultiple, isSettingToggle }

@@ -1,18 +1,30 @@
+<script setup lang="ts">
+import { toRefs } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '@/stores/settings'
+import SettingsNav from '@/components/settings/SettingsNav.vue'
+import SettingsView from '@/components/settings/SettingsView.vue'
+
+const settings = useSettingsStore()
+const { settingsState } = storeToRefs(settings)
+const { appSettings, isSettings } = toRefs(settingsState.value)
+</script>
+
 <template>
   <span
-    @click.stop="toggleSetting"
+    @click.stop="settings.toggleIsSettings"
     class="icon-btn material-icons material-icons-round md-light"
     >settings</span
   >
   <transition name="animation">
-    <div v-if="getIsSettings" class="settings scroll-ui">
+    <div v-if="isSettings" class="settings scroll-ui">
       <div class="settings__header">
         <h1 class="settings__title">Settings</h1>
       </div>
       <div class="settings__main">
         <ul class="settings__nav">
           <SettingsNav
-            v-for="(group, idx) in getAppSettings"
+            v-for="(group, idx) in appSettings"
             :key="group.id"
             :group="group"
             :indexInArray="idx"
@@ -20,36 +32,12 @@
         </ul>
 
         <div class="settings__view">
-          <SettingsView
-            v-for="group in getAppSettings"
-            :key="group.id"
-            :group="group"
-          />
+          <SettingsView v-for="group in appSettings" :key="group.id" :group="group" />
         </div>
       </div>
     </div>
   </transition>
 </template>
-
-<script>
-import { mapGetters, mapActions } from 'vuex';
-import SettingsNav from '@/components/settings/SettingsNav';
-import SettingsView from '@/components/settings/SettingsView';
-
-export default {
-  name: 'Settings',
-  components: {
-    SettingsNav,
-    SettingsView,
-  },
-  computed: {
-    ...mapGetters(['getAppSettings', 'getIsSettings']),
-  },
-  methods: {
-    ...mapActions(['toggleSetting']),
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 .settings {
