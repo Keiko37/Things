@@ -1,5 +1,6 @@
 interface ExtensionsState {
   isExtensions: boolean
+  isPomodoroOpened: boolean
   extensionsLinks: ExtensionLink[]
 }
 

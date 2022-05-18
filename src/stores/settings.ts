@@ -246,7 +246,6 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   const toggleIsSettings = (): void => {
-    // TODO: replace name on toggleIsSettings
     settingsState.isSettings = !settingsState.isSettings
   }
 

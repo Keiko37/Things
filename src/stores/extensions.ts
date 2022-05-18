@@ -5,6 +5,7 @@ import type { ExtensionsState } from '@/types/ExtensionsState'
 export const useExtensionsStore = defineStore('extensions', () => {
   const extensionsState: ExtensionsState = reactive({
     isExtensions: false,
+    isPomodoroOpened: false,
     extensionsLinks: [
       {
         id: 1,

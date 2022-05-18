@@ -18,7 +18,8 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
       bookmarksState.isBookmarks = value
     }
   }
-  const toggleBookmarkEditing = () => (bookmarksState.isBookmarkEditing = !bookmarksState.isBookmarkEditing)
+  const toggleBookmarkEditing = () =>
+    (bookmarksState.isBookmarkEditing = !bookmarksState.isBookmarkEditing)
 
   const setAllBoolmarks = (newValue: []) => {
     bookmarksState.bookmarks = newValue
@@ -41,17 +42,15 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
     const oldBookmarkIndex = bookmarksState.bookmarks.indexOf(oldBookmark)
     bookmarksState.bookmarks[oldBookmarkIndex] = newBookmark
   }
-
-  // TODO: see what it is
-  // toggleBookmarks(context, bool) {
-  //   if (context.state.isBookmarks) {
-  //     context.commit('setMoreModalNumber', 0);
-  //   }
-  //   if (context.state.isBookmarks && context.state.bookmarkEditing) {
-  //     context.commit('toggleBookmarkEditing');
-  //   }
-  //   context.commit('setIsBookmarks', bool);
-  // },
+  const toggleBookmarks = (bool: boolean) => {
+    if (bookmarksState.isBookmarks) {
+      setMoreModalNumber(0)
+    }
+    if (bookmarksState.isBookmarks && bookmarksState.isBookmarkEditing) {
+      toggleBookmarkEditing()
+    }
+    toggleIsBookmarks(bool)
+  }
   watch(
     () => bookmarksState.bookmarks,
     () => localStorage.setItem('bookmarks', JSON.stringify(bookmarksState.bookmarks)),
@@ -67,5 +66,6 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
     setMoreModalNumber,
     setEditableBookmark,
     updateBookmark,
+    toggleBookmarks,
   }
 })

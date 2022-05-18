@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Desktop from '@/views/Desktop.vue'
+import MainDesktop from '@/views/MainDesktop.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'desktop',
-      component: Desktop,
+      component: MainDesktop,
     },
     // {
     //   path: '/about',
