@@ -7,8 +7,10 @@ interface BookmarksState {
 }
 
 interface Bookmark {
+  id: number
   name: string
   link: string
+  icon: string
 }
 
 export type { BookmarksState, Bookmark }

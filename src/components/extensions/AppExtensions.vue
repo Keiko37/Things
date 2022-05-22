@@ -26,7 +26,7 @@ const extensions = useExtensionsStore()
   display: flex;
   max-width: 40%;
   user-select: none;
-  color: $text-color-secondary;
+  color: (--text-color-secondary);
   position: absolute;
   left: 60px;
 }

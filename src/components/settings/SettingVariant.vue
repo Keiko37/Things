@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { SettingsGroupKind, SettingKind, SubsettingsGroup } from '@/types/SettingsState'
+import type {
+  SettingsGroupKind,
+  SettingKind,
+  SubsettingsGroup,
+  SettingsGroup,
+} from '@/types/SettingsState'
 import { isSettingMultiple, isSettingToggle, isSettingNumber } from '@/types/SettingsState'
 import { useSettingsStore } from '@/stores/settings'
 
 const props = defineProps<{
   group: SettingsGroupKind
   setting: SettingKind
-  subsettingGroup: SubsettingsGroup
+  subsettingGroup?: SettingsGroup
 }>()
 
 const settings = useSettingsStore()
@@ -22,7 +27,7 @@ function changeSetting(
   event: Event,
   groupOfSettings: SettingsGroupKind,
   settingName: string,
-  subsettingGroup: SubsettingsGroup
+  subsettingGroup?: SettingsGroup
 ) {
   let newValue: boolean | number | string | undefined
 
@@ -40,7 +45,7 @@ function changeSetting(
       newValue = (event.target as HTMLInputElement).value
       break
     default:
-      throw new Error('changeSetting: setting has the wrong type.')
+      throw new Error('changeSetting: wrong setting type.')
   }
   // TODO: recheck notifications code section, move it inside new function
   if (
@@ -70,7 +75,7 @@ function changeSetting(
     return
   }
   if (newValue === undefined) {
-    throw new Error('changeSetting: new value is undefined.')
+    throw new Error('changeSetting: new value of setting is undefined.')
   }
   settings.updateSetting(newValue, groupOfSettings, settingName, subsettingGroup)
 
@@ -199,7 +204,7 @@ input[type='number']::-webkit-outer-spin-button {
   }
   &__number-input {
     background-color: transparent;
-    color: $text-color;
+    color: var(--text-color);
     width: 1.2rem;
     height: 2rem;
     margin: 0 2px;
@@ -234,7 +239,7 @@ input[type='number']::-webkit-outer-spin-button {
     height: 1.5em;
     background: transparent;
     border-radius: 2.5em;
-    border: 1px solid $text-color-secondary;
+    border: 1px solid var(--text-color-secondary);
     transition: all 0.5s ease;
     cursor: pointer;
   }
@@ -246,7 +251,7 @@ input[type='number']::-webkit-outer-spin-button {
     width: 1.2em;
     height: 1.2em;
     background: transparent;
-    border: 1px solid $text-color-secondary;
+    border: 1px solid var(--text-color-secondary);
     border-radius: 50%;
     transition: all 0.5s ease;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);

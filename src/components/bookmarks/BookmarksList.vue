@@ -1,46 +1,36 @@
+<script setup lang="ts">
+import { useBookmarksStore } from '@/stores/bookmarks'
+import Bookmark from '@/components/bookmarks/BookmarkItem.vue'
+
+const bookmarksStore = useBookmarksStore()
+</script>
+
 <template>
-  <div v-if="getBookmarks.length > 0" @click="addBookmark" class="add-bookmark">
+  <div
+    v-if="bookmarksStore.bookmarksState.bookmarks.length > 0"
+    @click="bookmarksStore.toggleBookmarkEditing()"
+    class="add-bookmark"
+  >
     <span
-      class="
-        material-icons material-icons-round
-        md-light md-24
-        bookmarks-icon
-        icon-btn
-        add-bookmark__icon
-      "
+      class="material-icons material-icons-round md-light md-24 bookmarks-icon icon-btn add-bookmark__icon"
       >add</span
     >
   </div>
-  <p v-if="getBookmarks.length <= 0" @click="addBookmark" class="no-bookmarks">
+  <p
+    v-if="bookmarksStore.bookmarksState.bookmarks.length <= 0"
+    @click="bookmarksStore.toggleBookmarkEditing()"
+    class="no-bookmarks"
+  >
     Add first bookmark
   </p>
   <ul class="bookmarks__list scroll-ui">
     <Bookmark
-      v-for="bookmark in getBookmarks"
+      v-for="bookmark in bookmarksStore.bookmarksState.bookmarks"
       :key="bookmark.id"
       :bookmark="bookmark"
     />
   </ul>
 </template>
-
-<script>
-import { mapGetters, mapMutations } from 'vuex';
-import Bookmark from '@/components/bookmarks/Bookmark.vue';
-
-export default {
-  name: 'BookmarksList',
-  components: { Bookmark },
-  computed: {
-    ...mapGetters(['getBookmarks']),
-  },
-  methods: {
-    ...mapMutations(['toggleBookmarkEditing']),
-    addBookmark() {
-      this.toggleBookmarkEditing();
-    },
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 .add-bookmark {

@@ -1,30 +1,19 @@
+<script setup lang="ts">
+import type { Bookmark } from '@/types/BookmarksState'
+import BookmarkActions from '@/components/bookmarks/BookmarkActions.vue'
+
+defineProps<{ bookmark: Bookmark }>()
+</script>
+
 <template>
   <li class="bookmark">
-    <a :href="bookmark.url" class="bookmark__link">
-      <img
-        :src="bookmark.icon"
-        class="bookmark__icon"
-        alt="bookmark icon"
-        height="16"
-        width="16"
-      />
-      <span class="bookmark__title">{{ bookmark.title }}</span>
+    <a :href="bookmark.link" class="bookmark__link">
+      <img :src="bookmark.icon" class="bookmark__icon" alt="bookmark icon" height="16" width="16" />
+      <span class="bookmark__title">{{ bookmark.name }}</span>
     </a>
     <BookmarkActions :bookmark="bookmark" />
   </li>
 </template>
-
-<script>
-import BookmarkActions from '@/components/bookmarks/BookmarkActions';
-
-export default {
-  name: 'Bookmark',
-  components: { BookmarkActions },
-  props: {
-    bookmark: Object,
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 .bookmark {
@@ -48,7 +37,7 @@ export default {
   }
   &__title {
     font-size: 16px;
-    color: $text-color;
+    color: var(--text-color);
     opacity: 0.7;
     font-weight: 500;
   }

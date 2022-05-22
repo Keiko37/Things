@@ -53,10 +53,10 @@ const { appSettings, isSettings } = toRefs(settingsState.value)
   width: 50%;
   min-height: 250px;
   height: 75%;
-  background-color: $bg-color;
+  background-color: var(--bg-color);
   border-radius: 10px 0 10px 10px;
   padding: 20px;
-  color: $text-color-secondary;
+  color: var(--text-color-secondary);
 
   &__title {
     font-size: 3rem;

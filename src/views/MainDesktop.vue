@@ -2,10 +2,10 @@
 import { useSettingsStore } from '@/stores/settings'
 import { useBookmarksStore } from '@/stores/bookmarks'
 import { useExtensionsStore } from '@/stores/extensions'
-import Clock from '@/components/Clock.vue'
-import Fullscreen from '@/components/Fullscreen.vue'
-import Settings from '@/components/settings/Settings.vue'
-import Bookmarks from '@/components/bookmarks/Bookmarks.vue'
+import Clock from '@/components/AppClock.vue'
+import Fullscreen from '@/components/FullscreenButton.vue'
+import Settings from '@/components/settings/AppSettings.vue'
+import Bookmarks from '@/components/bookmarks/BookmarksView.vue'
 import Extensions from '@/components/extensions/AppExtensions.vue'
 import Pomodoro from '@/components/extensions/pomodoro/ExtensionPomodoro.vue'
 
@@ -61,7 +61,7 @@ function focusWindow(event: Event, classForFinding: string, stopClass: string) {
 
 <style lang="scss" scoped>
 .desktop {
-  font-family: $text-font;
+  font-family: var(--text-font);
   padding: 10px 15px;
   font-weight: 300;
   width: 100%;

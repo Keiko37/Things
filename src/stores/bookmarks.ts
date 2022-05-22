@@ -11,7 +11,7 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
     editableBookmark: null,
   })
 
-  const toggleIsBookmarks = (value: boolean) => {
+  const toggleIsBookmarks = (value?: boolean) => {
     if (typeof value === 'undefined') {
       bookmarksState.isBookmarks = !bookmarksState.isBookmarks
     } else {
@@ -21,10 +21,10 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
   const toggleBookmarkEditing = () =>
     (bookmarksState.isBookmarkEditing = !bookmarksState.isBookmarkEditing)
 
-  const setAllBoolmarks = (newValue: []) => {
+  const setAllBookmarks = (newValue: Bookmark[]) => {
     bookmarksState.bookmarks = newValue
   }
-  const addToBoookmarks = (bookmark: Bookmark) => {
+  const addToBookmarks = (bookmark: Bookmark) => {
     bookmarksState.bookmarks.push(bookmark)
   }
   const removeFromBookmarks = (bookmark: Bookmark) => {
@@ -34,7 +34,7 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
   const setMoreModalNumber = (bookmarkId: number) => {
     bookmarksState.moreModalNumber = bookmarkId
   }
-  const setEditableBookmark = (bookmark: Bookmark) => {
+  const setEditableBookmark = (bookmark: Bookmark | null) => {
     bookmarksState.editableBookmark = bookmark
   }
 
@@ -51,6 +51,7 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
     }
     toggleIsBookmarks(bool)
   }
+
   watch(
     () => bookmarksState.bookmarks,
     () => localStorage.setItem('bookmarks', JSON.stringify(bookmarksState.bookmarks)),
@@ -60,8 +61,8 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
     bookmarksState,
     toggleIsBookmarks,
     toggleBookmarkEditing,
-    setAllBoolmarks,
-    addToBoookmarks,
+    setAllBookmarks,
+    addToBookmarks,
     removeFromBookmarks,
     setMoreModalNumber,
     setEditableBookmark,

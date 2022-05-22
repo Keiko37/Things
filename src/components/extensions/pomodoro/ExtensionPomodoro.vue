@@ -246,11 +246,11 @@ watch(timerFinished, (newValue) => {
   }
   &__condition {
     text-transform: capitalize;
-    color: $text-color-secondary;
+    color: var(--text-color-secondary);
     font-size: 2rem;
   }
   &__timer {
-    color: $text-color-secondary;
+    color: var(--text-color-secondary);
     font-size: 3rem;
   }
 }

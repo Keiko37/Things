@@ -33,7 +33,7 @@ onUnmounted(() => (clockIntervalId.value ? window.clearInterval(clockIntervalId.
 
 <style lang="scss" scoped>
 .clock {
-  color: $text-color;
+  color: var(--text-color);
   user-select: none;
   top: 50%;
   left: 50%;

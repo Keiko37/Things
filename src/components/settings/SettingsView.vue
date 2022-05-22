@@ -2,7 +2,7 @@
 import type { SettingsGroupKind } from '@/types/SettingsState'
 import { isSubsettingsGroup } from '@/types/SettingsState'
 import { useSettingsStore } from '@/stores/settings'
-import Setting from '@/components/settings/Setting.vue'
+import Setting from '@/components/settings/SettingVariant.vue'
 import { storeToRefs } from 'pinia'
 import { toRefs } from 'vue'
 

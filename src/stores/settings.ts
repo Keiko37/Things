@@ -1,4 +1,4 @@
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
 import type {
   SettingsState,
@@ -276,7 +276,7 @@ export const useSettingsStore = defineStore('settings', () => {
     settingsState.checkedNavIndex = idx
   }
 
-  const selectSubsetting = (group: SubsettingsGroup, subsettingIndex: number) => {
+  const selectSubsetting = (group: SettingsGroupKind, subsettingIndex: number) => {
     // TODO: maybe pass only the targetGroupTitle and not the whole group
     const foundGroup = settingsState.appSettings.find(
       (groupOfSettings) => groupOfSettings.title === group.title
@@ -299,31 +299,25 @@ export const useSettingsStore = defineStore('settings', () => {
     newValue: number | string | boolean,
     groupOfSettings: SettingsGroup,
     settingName: string,
-    subsettingGroup: SubsettingsGroup
+    subsettingGroup?: SettingsGroup
   ) => {
     setSetting(newValue, groupOfSettings, settingName, subsettingGroup)
-    setNavChecked()
-    // TODO: rewrite code below and maybe do that with  watch(settingsState.appSettings...)
-    // localStorage.setItem(
-    //   'appSettings',
-    //   JSON.stringify(context.getters.getAppSettings)
-    // );
-    // const subsettingIdx = context.state.checkedSubsetting;
-    // const settingIdx = context.state.checkedNav;
-    // context.dispatch('selectNav', settingIdx);
-    // if (settingObj.subsettingGroup) {
-    //   context.dispatch('selectSubsetting', {
-    //     group: context.state.appSettings[settingIdx],
-    //     subsettingIndex: subsettingIdx,
-    //   });
-    // }
+    setNavChecked() // uncheck all nav's
+    const subsettingIdx = settingsState.checkedSubsettingIndex
+    const settingIdx = settingsState.checkedNavIndex
+    if (settingIdx !== null) {
+      setNavChecked(settingIdx)
+    }
+    if (subsettingGroup !== undefined && settingIdx !== null && subsettingIdx !== null) {
+      selectSubsetting(settingsState.appSettings[settingIdx], subsettingIdx)
+    }
   }
 
   const setSetting = (
     newValue: number | string | boolean,
     groupOfSettings: SettingsGroup,
     settingName: string,
-    subsettingGroup: SubsettingsGroup
+    subsettingGroup: SettingsGroup | undefined
   ) => {
     const foundGroup = settingsState.appSettings.find(
       (group) => group.title === groupOfSettings.title
@@ -380,6 +374,14 @@ export const useSettingsStore = defineStore('settings', () => {
     setClockVisible(true)
     settingsState.clockVisibleTimerId = window.setTimeout(() => setClockVisible(false), 2000)
   }
+
+  watch(
+    () => settingsState.appSettings,
+    () => {
+      localStorage.setItem('appSettings', JSON.stringify(settingsState.appSettings))
+    },
+    { flush: 'post' }
+  )
 
   return {
     settingsState,
