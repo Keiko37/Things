@@ -6,8 +6,8 @@ import Clock from '@/components/Clock.vue'
 import Fullscreen from '@/components/Fullscreen.vue'
 import Settings from '@/components/settings/Settings.vue'
 import Bookmarks from '@/components/bookmarks/Bookmarks.vue'
-import Extensions from '@/components/extensions/Extensions.vue'
-import Pomodoro from '@/components/extensions/pomodoro/Pomodoro.vue'
+import Extensions from '@/components/extensions/AppExtensions.vue'
+import Pomodoro from '@/components/extensions/pomodoro/ExtensionPomodoro.vue'
 
 const appSettings = useSettingsStore()
 const bookmarks = useBookmarksStore()

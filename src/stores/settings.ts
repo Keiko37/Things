@@ -8,7 +8,7 @@ import type {
   SettingMultiple,
   SettingKind,
 } from '@/types/SettingsState'
-import { isSubsettingsGroup, isSettingsGroup } from '@/types/SettingsState'
+import { isSubsettingsGroup } from '@/types/SettingsState'
 
 function isClockSize(value: string): value is ClockSize {
   const clockSizes = ['6rem', '11rem', '15rem']
@@ -26,7 +26,7 @@ export const useSettingsStore = defineStore('settings', () => {
     appSettings: [],
     defaultSettings: [
       {
-        id: 1,
+        id: 0,
         title: 'clock',
         groupChecked: false,
         settings: [
@@ -43,7 +43,7 @@ export const useSettingsStore = defineStore('settings', () => {
         ],
       },
       {
-        id: 2,
+        id: 1,
         title: 'extensions',
         groupChecked: false,
         settings: [
@@ -55,7 +55,7 @@ export const useSettingsStore = defineStore('settings', () => {
         ],
         subSettings: [
           {
-            id: 2.1,
+            id: 0,
             title: 'pomodoro',
             groupChecked: false,
             settings: [
@@ -94,7 +94,7 @@ export const useSettingsStore = defineStore('settings', () => {
         ],
       },
       // {
-      //   id: 3,
+      //   id: 2,
       //   title: 'fullscreen',
       //   groupChecked: false,
       //   settings: [],
@@ -102,6 +102,32 @@ export const useSettingsStore = defineStore('settings', () => {
     ],
   })
 
+  const findSettingsGroupByName = (settingsGroupTitle: string, subsettingsGroupTitle?: string) => {
+    const foundSettingsGroup: SettingsGroupKind | undefined = settingsState.appSettings.find(
+      (settingsGroup: SettingsGroup) => settingsGroup.title === settingsGroupTitle
+    )
+    if (foundSettingsGroup === undefined) {
+      throw new Error(`findSettingsGroupByName: settings group ${settingsGroupTitle} not found.`)
+    }
+    if (subsettingsGroupTitle === undefined) {
+      return foundSettingsGroup
+    } else {
+      if (!isSubsettingsGroup(foundSettingsGroup)) {
+        throw new Error(
+          'findSettingsGroupByName: settings group ${settingsGroupTitle} not equal type "SubsettingsGroup".'
+        )
+      }
+      const foundSubsettingsGroup = foundSettingsGroup.subSettings.find(
+        (subsettingsGroup) => subsettingsGroup.title === subsettingsGroupTitle
+      )
+      if (foundSubsettingsGroup === undefined) {
+        throw new Error(
+          `findSettingsGroupByName: subsetting group ${subsettingsGroupTitle} not found.`
+        )
+      }
+      return foundSubsettingsGroup
+    }
+  }
   const getClockSize = computed<ClockSize>(() => {
     const clockSettings: SettingsGroup | undefined = settingsState.appSettings.find(
       (group) => group.title === 'clock'
@@ -125,41 +151,27 @@ export const useSettingsStore = defineStore('settings', () => {
     return sizeSetting.selectedValue
   })
 
-  const getExtensionsGroup = computed<SettingsGroup>(() => {
+  const getExtensionsGroup = computed<SubsettingsGroup>(() => {
     const extensions: SettingsGroup | undefined = settingsState.appSettings.find(
-      (group: SettingsGroup) => group.title === 'extensions'
+      (group: SettingsGroup | SubsettingsGroup) => group.title === 'extensions'
     )
     if (!extensions) {
-      throw new Error('getExtensionGroup: "extensions" settings group not found.')
+      throw new Error('getExtensionGroup: "extensions" subsettings group not found.')
+    }
+    if (!isSubsettingsGroup(extensions)) {
+      throw new Error('getExtensionsGroup: "extensions is not subsetting group."')
     }
     return extensions
   })
 
   const getPomodoroSettingsList = computed<SettingKind[]>(() => {
     // TODO: replace in external module
-    const extensionsSettings = settingsState.appSettings.find(
-      (group) => group.title === 'extensions'
-    )
-    if (!extensionsSettings || !isSubsettingsGroup(extensionsSettings)) {
-      throw new Error('getPomodoroSettingsList: "extensions" settings not found.')
-    }
-    const pomodoroSettings: SettingsGroup | undefined = extensionsSettings.subSettings.find(
-      (subsetting) => subsetting.title === 'pomodoro'
-    )
-    if (!pomodoroSettings) {
-      throw new Error('getPomodoroSettingsList: "pomodoro" settings not found.')
-    }
-    if (!isSettingsGroup(pomodoroSettings)) {
-      throw new Error('getClockSize: "selected size" setting value is not the "ClockSize" type.')
-    }
+    const pomodoroSettings = findSettingsGroupByName('extensions', 'pomodoro')
     return pomodoroSettings.settings
   })
 
   const getFocusTimerMinutes = computed<number>(() => {
     // TODO: replace in external module
-    if (typeof getPomodoroSettingsList.value === 'undefined') {
-      throw new Error('getFocusTimerMinutes: getPomodoroList is undefined.')
-    }
     const focusTimerSetting = getPomodoroSettingsList.value.find(
       (subsetting) => subsetting.title === 'focus timer duration'
     )
@@ -200,15 +212,17 @@ export const useSettingsStore = defineStore('settings', () => {
     return longRestTimerSetting.selectedValue
   })
 
-  const getPomodorosBeforeLongRest = computed<number>(() => {
+  const numberOfPomodorosBeforeLongRest = computed<number>(() => {
     // TODO: replace in external module
     const pomodorosBeforeLongRestSetting: SettingKind | undefined =
       getPomodoroSettingsList.value.find((setting) => setting.title === 'a long break in every one')
     if (!pomodorosBeforeLongRestSetting) {
-      throw new Error('getPomodorosBeforeLongRest: "pomodoros before long rest" setting not found.')
+      throw new Error(
+        'numberOfPomodorosBeforeLongRest: "pomodoros before long rest" setting not found.'
+      )
     }
     if (typeof pomodorosBeforeLongRestSetting.selectedValue !== 'number') {
-      throw new Error('getPomodorosBeforeLongRest: "selected value" not equal "number" type.')
+      throw new Error('numberOfPomodorosBeforeLongRest: "selected value" not equal "number" type.')
     }
     return pomodorosBeforeLongRestSetting.selectedValue
   })
@@ -344,59 +358,39 @@ export const useSettingsStore = defineStore('settings', () => {
     settingsState.isClockVisible = value
   }
 
-  const setPomodoroSetting = (
-    searchedSettingTitle: string,
-    newValue: number | string | boolean
-  ) => {
-    const extensionsSettingsGroup: SettingsGroupKind | undefined = settingsState.appSettings.find(
-      (setting) => setting.title === 'extensions' && isSubsettingsGroup(setting)
-    )
-    if (typeof extensionsSettingsGroup === 'undefined') {
-      throw new Error('setPomodoroSetting: extensions settings group not found.')
-    }
-    if (!isSubsettingsGroup(extensionsSettingsGroup)) {
-      throw new Error(
-        'setPomodoroSetting: extensionsSettingsGroup not equal type "SubsettingsGroup".'
-      )
-    }
+  const setPomodoroSetting = (settingTitle: string, newValue: number | string | boolean) => {
+    const pomodoroSettingsGroup = findSettingsGroupByName('extensions', 'pomodoro')
 
-    const pomodoroGroup = extensionsSettingsGroup.subSettings.find(
-      (subsetting) => subsetting.title === 'pomodoro'
+    const foundSetting = pomodoroSettingsGroup.settings.find(
+      (setting) => setting.title === settingTitle
     )
-    if (!pomodoroGroup) {
-      throw new Error('setPomodoroSetting: pomodoro group not found.')
-    }
-
-    const foundSetting = pomodoroGroup.settings.find(
-      (setting) => setting.title === searchedSettingTitle
-    )
-    if (!foundSetting) {
+    if (foundSetting === undefined) {
       throw new Error('setPomodoroSetting: pomodoro setting not found.')
     }
-    if (typeof foundSetting.selectedValue === typeof newValue) {
-      foundSetting.selectedValue = newValue
-    } else {
+    if (typeof foundSetting.selectedValue !== typeof newValue) {
       throw new Error(
         'setPomodoroSetting: type of the settings selected value is not equal to the type of the new value.'
       )
     }
+    foundSetting.selectedValue = newValue
   }
 
   const timerClockVisible = () => {
     clearTimeout(settingsState.clockVisibleTimerId)
     setClockVisible(true)
-    settingsState.clockVisibleTimerId = setTimeout(() => setClockVisible(false), 2000)
+    settingsState.clockVisibleTimerId = window.setTimeout(() => setClockVisible(false), 2000)
   }
 
   return {
     settingsState,
+    findSettingsGroupByName,
     getClockSize,
     getExtensionsGroup,
     getPomodoroSettingsList,
     getFocusTimerMinutes,
     getRestTimerMinutes,
     getLongRestTimerMinutes,
-    getPomodorosBeforeLongRest,
+    numberOfPomodorosBeforeLongRest,
     getAlarmOn,
     getLoopTimerOn,
     setAppSettings,

@@ -24,7 +24,7 @@ export const useExtensionsStore = defineStore('extensions', () => {
     if (typeof foundExtension !== 'undefined') {
       foundExtension.active = !foundExtension.active
     } else {
-      throw Error('showExtension: extension not found.')
+      throw Error('toggleExtensionActivity: extension not found.')
     }
   }
 
