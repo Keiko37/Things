@@ -16,7 +16,7 @@ const extensions = useExtensionsStore()
       v-for="(extension, idx) in extensions.extensionsState.extensionsLinks"
       :key="extension.id"
       :extension="extension"
-      :orderIdx="idx"
+      :orderIndex="idx"
     />
   </div>
 </template>

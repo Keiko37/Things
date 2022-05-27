@@ -1,5 +1,6 @@
 /* import other scss files */
 @import './normalize.css';
+@import './fonts.css';
 @import './variables.css';
 
 /* Icons Styles */
