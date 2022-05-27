@@ -2,6 +2,7 @@
 import { toRefs } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
+import AppIcon from '@/components/global/AppIcon.vue'
 import SettingsNav from '@/components/settings/SettingsNav.vue'
 import SettingsView from '@/components/settings/SettingsView.vue'
 
@@ -13,9 +14,10 @@ const { appSettings, isSettings } = toRefs(settingsState.value)
 <template>
   <span
     @click.stop="settings.toggleIsSettings"
-    class="icon-btn material-icons material-icons-round md-light"
-    >settings</span
+    class="material-icons material-icons-round md-light icon-btn"
   >
+    <AppIcon name="settings" />
+  </span>
   <transition name="animation">
     <div v-if="isSettings" class="settings scroll-ui">
       <div class="settings__header">

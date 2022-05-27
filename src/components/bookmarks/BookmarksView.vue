@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Bookmark } from '@/types/BookmarksState'
 import { useBookmarksStore } from '@/stores/bookmarks'
+import AppIcon from '../global/AppIcon.vue'
 import EditBookmark from '@/components/bookmarks/EditBookmark.vue'
 import BookmarksList from '@/components/bookmarks/BookmarksList.vue'
 
@@ -24,8 +25,9 @@ function switchBookmarksWindow() {
   <span
     @click.stop="switchBookmarksWindow"
     class="material-icons material-icons-round md-light bookmarks-icon icon-btn"
-    >bookmarks</span
   >
+    <AppIcon name="bookmarks" />
+  </span>
   <div v-if="bookmarksStore.bookmarksState.isBookmarks" class="bookmarks">
     <EditBookmark v-if="bookmarksStore.bookmarksState.isBookmarkEditing" key="edit" />
     <BookmarksList v-else key="list" />

@@ -43,17 +43,17 @@ function focusWindow(event: Event, classForFinding: string, stopClass: string) {
 
 <template>
   <div @click="closeWindows($event)" class="desktop">
-    <header class="header">
+    <header class="desktop__header">
       <Extensions />
       <Settings />
     </header>
 
-    <main class="main">
+    <main class="desktop__main">
       <Bookmarks />
       <Pomodoro v-if="extensions.extensionsState.isPomodoroOpened" />
       <Clock />
     </main>
-    <footer class="footer">
+    <footer class="desktop__footer">
       <Fullscreen />
     </footer>
   </div>
@@ -75,25 +75,17 @@ function focusWindow(event: Event, classForFinding: string, stopClass: string) {
   display: flex;
   flex-direction: column;
 }
-.header {
+.desktop__header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
 }
-.main {
+.desktop__main {
   display: flex;
   flex: 1 1 auto;
 }
-.footer {
+.desktop__footer {
   display: flex;
   justify-content: space-between;
-}
-.icon-btn {
-  cursor: pointer;
-  opacity: 0.5;
-  user-select: none;
-  &:hover {
-    opacity: 0.8;
-  }
 }
 </style>

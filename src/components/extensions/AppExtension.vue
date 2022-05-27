@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { ExtensionLink } from '@/types/ExtensionsState'
 import { useExtensionsStore } from '@/stores/extensions'
 import { useSettingsStore } from '@/stores/settings'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 const props = defineProps<{
   extension: ExtensionLink
@@ -35,8 +36,8 @@ function isExtensionEnabled(extentionTitle: string) {
       :data-title="extension.title"
       class="tooltip"
     >
-      <div class="material-symbols-rounded extension-icon icon-btn">
-        {{ extension.icon }}
+      <div class="material-symbols-rounded icon-btn extension-icon">
+        <AppIcon :name="extension.icon" />
       </div>
     </div>
   </transition>

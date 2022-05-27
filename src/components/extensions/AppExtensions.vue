@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Extension from '@/components/extensions/AppExtension.vue'
 import { useExtensionsStore } from '@/stores/extensions'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 const extensions = useExtensionsStore()
 </script>
@@ -9,8 +10,9 @@ const extensions = useExtensionsStore()
   <span
     @click="extensions.toggleIsExtensions"
     class="material-icons-round material-icons md-light icon-btn"
-    >extension</span
   >
+    <AppIcon name="extension" />
+  </span>
   <div class="extensions">
     <Extension
       v-for="(extension, idx) in extensions.extensionsState.extensionsLinks"
