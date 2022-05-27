@@ -2,11 +2,11 @@
 import icons from '@/assets/icons.js'
 
 const props = defineProps<{
-  name: keyof typeof icons
+  name: string
   size?: number
 }>()
 
-const iconData = icons[props.name]
+const iconData = icons[props.name as keyof typeof icons]
 </script>
 
 <template>
