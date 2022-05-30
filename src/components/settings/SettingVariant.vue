@@ -8,6 +8,7 @@ import type {
 } from '@/types/SettingsState'
 import { isSettingMultiple, isSettingToggle, isSettingNumber } from '@/types/SettingsState'
 import { useSettingsStore } from '@/stores/settings'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 const props = defineProps<{
   group: SettingsGroupKind
@@ -140,12 +141,12 @@ function decrementNumber() {
     </div>
 
     <div v-if="isSettingNumber(setting)" class="setting__number">
-      <button @click="decrementNumber()" class="setting__number-button">
-        <span class="material-icons-outlined material-icons icon-btn md-light md-18"> remove </span>
+      <button @click="decrementNumber()" class="icon-btn setting__number-button">
+        <AppIcon name="remove" />
       </button>
       <input v-model="settingValue" class="setting__number-input" step="1" type="number" readonly />
-      <button @click="incrementNumber()" class="setting__number-button">
-        <span class="material-icons-outlined material-icons icon-btn md-light md-18"> add </span>
+      <button @click="incrementNumber()" class="icon-btn setting__number-button">
+        <AppIcon name="add" />
       </button>
     </div>
   </div>

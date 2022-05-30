@@ -36,7 +36,7 @@ function isExtensionEnabled(extentionTitle: string) {
       :data-title="extension.title"
       class="tooltip"
     >
-      <div class="material-symbols-rounded icon-btn extension-icon">
+      <div class="icon-btn extension-icon">
         <AppIcon :name="extension.icon" />
       </div>
     </div>

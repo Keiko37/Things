@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import icons from '@/assets/icons.js'
+import icons from '@/assets/icons'
 
 const props = defineProps<{
   name: string

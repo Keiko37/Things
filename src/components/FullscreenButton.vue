@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 const isFullscreen = computed<boolean>(() => document.fullscreenElement !== null)
 
@@ -17,6 +18,6 @@ function toggleFullscreen() {
 
 <template>
   <span @click="toggleFullscreen" class="material-icons-round material-icons md-light icon-btn">
-    {{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}
+    <AppIcon :name="isFullscreen ? 'fullscreen_exit' : 'fullscreen'" />
   </span>
 </template>
