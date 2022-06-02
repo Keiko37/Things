@@ -13,6 +13,7 @@ const iconData = icons[props.name as keyof typeof icons]
   <div>
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      fill="#FFFFFF"
       :height="size || 25"
       :width="size || 25"
       viewBox="0 0 40 40"

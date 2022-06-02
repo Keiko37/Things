@@ -1,23 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { useFullscreen } from '@/composables/fullscreen'
 import AppIcon from '@/components/global/AppIcon.vue'
 
-const isFullscreen = computed<boolean>(() => document.fullscreenElement !== null)
-
-function toggleFullscreen() {
-  if (isFullscreen.value) {
-    document
-      .exitFullscreen()
-      .then(() => console.log('Exited from Full screen mode'))
-      .catch((err) => console.error(err))
-  } else {
-    document.documentElement.requestFullscreen()
-  }
-}
+const { isFullscreen, toggle } = useFullscreen()
 </script>
 
 <template>
-  <span @click="toggleFullscreen" class="material-icons-round material-icons md-light icon-btn">
-    <AppIcon :name="isFullscreen ? 'fullscreen_exit' : 'fullscreen'" />
+  <span @click="toggle" class="icon-btn">
+    <AppIcon v-if="isFullscreen" name="fullscreen_exit" />
+    <AppIcon v-else name="fullscreen" />
   </span>
 </template>
