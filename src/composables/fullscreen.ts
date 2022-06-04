@@ -2,7 +2,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 
 export function useFullscreen() {
   // TODO: add notification(with useNotification) on fullscreenchange event. Add event listener onMounted and remove onUnmounted hook.
-  // TO_FINISH: add listener changefullscreen event in hooks ^. And check if it's work. P.S. now pressed f11 not update isFullscreen variable.
+  // TODO: add fullscreen support for apple devices
   const isFullscreen = ref(false)
 
   const enter = async () => {
@@ -45,7 +45,6 @@ export function useFullscreen() {
   }
 
   const fullscreenChangeEvent = () => {
-    console.log(window.innerWidth, screen.width)
     if (window.innerHeight === screen.height && window.innerWidth === screen.width) {
       // this works only if the devtools are disabled. May be need some check on enabled devtools.
       isFullscreen.value = true
