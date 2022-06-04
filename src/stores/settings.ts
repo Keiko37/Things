@@ -129,6 +129,7 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
   const getClockSize = computed<ClockSize>(() => {
+    // TODO: replace to clock store
     const clockSettings: SettingsGroup | undefined = settingsState.appSettings.find(
       (group) => group.title === 'clock'
     )
@@ -380,7 +381,7 @@ export const useSettingsStore = defineStore('settings', () => {
     () => {
       localStorage.setItem('appSettings', JSON.stringify(settingsState.appSettings))
     },
-    { flush: 'post' }
+    { flush: 'post', deep: true }
   )
 
   return {
