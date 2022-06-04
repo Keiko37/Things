@@ -8,10 +8,13 @@ const settingsStore = useSettingsStore()
 const { settingsState } = storeToRefs(settingsStore)
 const { appSettings, defaultSettings } = toRefs(settingsState.value)
 
+function loadSettingsFromStorage(): SettingsGroupKind[] | null {
+  let settingsFromStorage = localStorage.getItem('appSettings')
+  return settingsFromStorage !== null ? JSON.parse(settingsFromStorage) : null
+}
+
 onMounted(() => {
-  let settingsFromStorage: string | null = localStorage.getItem('appSettings')
-  const parsedSettings: SettingsGroupKind[] | null =
-    settingsFromStorage !== null ? JSON.parse(settingsFromStorage) : null
+  const parsedSettings = loadSettingsFromStorage()
 
   if (
     parsedSettings === null ||
@@ -22,7 +25,7 @@ onMounted(() => {
   }
 
   if (appSettings.value.length === 0) {
-    settingsFromStorage = localStorage.getItem('appSettings')
+    const settingsFromStorage = localStorage.getItem('appSettings')
     appSettings.value = settingsFromStorage
       ? JSON.parse(settingsFromStorage)
       : defaultSettings.value
