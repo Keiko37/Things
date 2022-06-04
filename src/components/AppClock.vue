@@ -11,7 +11,6 @@ const { isSettings, isClockVisible } = toRefs(settingsState.value)
 const clock = useClockStore()
 const { clockIntervalId, currentTime } = storeToRefs(clock)
 
-const time: string | null = null
 const updateCurrentTime = () => {
   const date = new Date()
   const hours = date.getHours()
@@ -21,13 +20,19 @@ const updateCurrentTime = () => {
   }`
 }
 
-onMounted(() => (clockIntervalId.value = window.setInterval(updateCurrentTime, 1000)))
-onUnmounted(() => (clockIntervalId.value ? window.clearInterval(clockIntervalId.value) : undefined))
+onMounted(() => {
+  clockIntervalId.value = window.setInterval(updateCurrentTime, 1000)
+})
+onUnmounted(() => {
+  if (clockIntervalId.value) {
+    window.clearInterval(clockIntervalId.value)
+  }
+})
 </script>
 
 <template>
   <div v-if="!isSettings || isClockVisible" :style="{ fontSize: getClockSize }" class="clock">
-    {{ time }}
+    {{ currentTime }}
   </div>
 </template>
 

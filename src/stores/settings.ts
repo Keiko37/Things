@@ -326,15 +326,15 @@ export const useSettingsStore = defineStore('settings', () => {
     if (!foundGroup) {
       throw new Error('setSetting: settings group not found.')
     }
-    if (!isSubsettingsGroup(foundGroup)) {
-      throw new Error('setSetting: founded setting group not equal "SubsettingGroup" type.')
-    }
     if (!subsettingGroup) {
       const foundSetting = foundGroup.settings.find((setting) => setting.title === settingName)
       if (foundSetting) {
         foundSetting.selectedValue = newValue
       }
       return
+    }
+    if (!isSubsettingsGroup(foundGroup)) {
+      throw new Error('setSetting: founded setting group not equal "SubsettingGroup" type.')
     }
     const foundSubsettingGroup = foundGroup.subSettings.find(
       (subsettings) => subsettings.title === subsettingGroup.title
