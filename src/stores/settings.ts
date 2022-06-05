@@ -5,7 +5,6 @@ import type {
   SettingsGroupKind,
   SettingsGroup,
   SubsettingsGroup,
-  SettingKind,
 } from '@/types/SettingsState'
 import { isSubsettingsGroup } from '@/types/SettingsState'
 
@@ -133,97 +132,6 @@ export const useSettingsStore = defineStore('settings', () => {
     return extensions
   })
 
-  const getPomodoroSettingsList = computed<SettingKind[]>(() => {
-    // TODO: replace in external module
-    const pomodoroSettings = findSettingsGroupByName('extensions', 'pomodoro')
-    return pomodoroSettings.settings
-  })
-
-  const getFocusTimerMinutes = computed<number>(() => {
-    // TODO: replace in external module
-    const focusTimerSetting = getPomodoroSettingsList.value.find(
-      (subsetting) => subsetting.title === 'focus timer duration'
-    )
-    if (!focusTimerSetting) {
-      throw new Error('getFocusTimerMinutes: "focus timer" setting not found.')
-    }
-    if (typeof focusTimerSetting.selectedValue !== 'number') {
-      throw new Error('getFocusTimerMinutes: "selected value" not equal "number" type.')
-    }
-    return focusTimerSetting.selectedValue
-  })
-
-  const getRestTimerMinutes = computed<number>(() => {
-    // TODO: replace in external module
-    const restTimerSetting: SettingKind | undefined = getPomodoroSettingsList.value.find(
-      (setting) => setting.title === 'rest timer duration'
-    )
-    if (!restTimerSetting) {
-      throw new Error('getRestTimerMinutes: "rest timer" setting not found.')
-    }
-    if (typeof restTimerSetting.selectedValue !== 'number') {
-      throw new Error('getRestTimerMinutes: "selected value" not equal "number" type.')
-    }
-    return restTimerSetting.selectedValue
-  })
-
-  const getLongRestTimerMinutes = computed<number>(() => {
-    // TODO: replace in external module
-    const longRestTimerSetting: SettingKind | undefined = getPomodoroSettingsList.value.find(
-      (setting) => setting.title === 'long rest timer duration'
-    )
-    if (!longRestTimerSetting) {
-      throw new Error('getLongRestTimerMinutes: "long rest timer" setting not found.')
-    }
-    if (typeof longRestTimerSetting.selectedValue !== 'number') {
-      throw new Error('getLongRestTimerMinutes: "selected value" not equal "number" type.')
-    }
-    return longRestTimerSetting.selectedValue
-  })
-
-  const numberOfPomodorosBeforeLongRest = computed<number>(() => {
-    // TODO: replace in external module
-    const pomodorosBeforeLongRestSetting: SettingKind | undefined =
-      getPomodoroSettingsList.value.find((setting) => setting.title === 'a long break in every one')
-    if (!pomodorosBeforeLongRestSetting) {
-      throw new Error(
-        'numberOfPomodorosBeforeLongRest: "pomodoros before long rest" setting not found.'
-      )
-    }
-    if (typeof pomodorosBeforeLongRestSetting.selectedValue !== 'number') {
-      throw new Error('numberOfPomodorosBeforeLongRest: "selected value" not equal "number" type.')
-    }
-    return pomodorosBeforeLongRestSetting.selectedValue
-  })
-
-  const getAlarmOn = computed<boolean>(() => {
-    // TODO: replace in external module
-    const alarmOnSetting: SettingKind | undefined = getPomodoroSettingsList.value.find(
-      (setting) => setting.title === 'notifications'
-    )
-    if (!alarmOnSetting) {
-      throw new Error('getAlarmOn: "pomodoro alarm on" setting not found.')
-    }
-    if (typeof alarmOnSetting.selectedValue !== 'boolean') {
-      throw new Error('getAlarmOn: "selected value" not equal "boolean" type.')
-    }
-    return alarmOnSetting.selectedValue
-  })
-
-  const getLoopTimerOn = computed<boolean>(() => {
-    // TODO: replace in external module
-    const loopTimerOnSetting: SettingKind | undefined = getPomodoroSettingsList.value.find(
-      (setting) => setting.title === 'loop'
-    )
-    if (!loopTimerOnSetting) {
-      throw new Error('getLoopTimerOn: "loop timer on" setting not found.')
-    }
-    if (typeof loopTimerOnSetting.selectedValue !== 'boolean') {
-      throw new Error('getLoopTimerOn: "selected value" not equal "boolean" type.')
-    }
-    return loopTimerOnSetting.selectedValue
-  })
-
   const setAppSettings = (value: SettingsGroupKind[]): void => {
     settingsState.appSettings = value
   }
@@ -317,23 +225,6 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  const setPomodoroSetting = (settingTitle: string, newValue: number | string | boolean) => {
-    const pomodoroSettingsGroup = findSettingsGroupByName('extensions', 'pomodoro')
-
-    const foundSetting = pomodoroSettingsGroup.settings.find(
-      (setting) => setting.title === settingTitle
-    )
-    if (foundSetting === undefined) {
-      throw new Error('setPomodoroSetting: pomodoro setting not found.')
-    }
-    if (typeof foundSetting.selectedValue !== typeof newValue) {
-      throw new Error(
-        'setPomodoroSetting: type of the settings selected value is not equal to the type of the new value.'
-      )
-    }
-    foundSetting.selectedValue = newValue
-  }
-
   watch(
     () => settingsState.appSettings,
     () => {
@@ -346,19 +237,11 @@ export const useSettingsStore = defineStore('settings', () => {
     settingsState,
     findSettingsGroupByName,
     getExtensionsGroup,
-    getPomodoroSettingsList,
-    getFocusTimerMinutes,
-    getRestTimerMinutes,
-    getLongRestTimerMinutes,
-    numberOfPomodorosBeforeLongRest,
-    getAlarmOn,
-    getLoopTimerOn,
     setAppSettings,
     toggleIsSettings,
     setNavChecked,
     selectSubsetting,
     setSetting,
-    setPomodoroSetting,
     updateSetting,
   }
 })
