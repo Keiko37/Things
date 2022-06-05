@@ -1,7 +1,5 @@
 interface SettingsState {
   isSettings: boolean
-  isClockVisible: boolean
-  clockVisibleTimerId: number
   checkedNavIndex: number | null
   checkedSubsettingIndex: number | null
   appSettings: SettingsGroupKind[]

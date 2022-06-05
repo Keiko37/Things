@@ -5,22 +5,13 @@ import type {
   SettingsGroupKind,
   SettingsGroup,
   SubsettingsGroup,
-  SettingMultiple,
   SettingKind,
 } from '@/types/SettingsState'
 import { isSubsettingsGroup } from '@/types/SettingsState'
 
-function isClockSize(value: string): value is ClockSize {
-  const clockSizes = ['6rem', '11rem', '15rem']
-  return clockSizes.includes(value)
-}
-type ClockSize = '6rem' | '11rem' | '15rem'
-
 export const useSettingsStore = defineStore('settings', () => {
   const settingsState: SettingsState = reactive({
     isSettings: false,
-    isClockVisible: false,
-    clockVisibleTimerId: 0,
     checkedNavIndex: null,
     checkedSubsettingIndex: null,
     appSettings: [],
@@ -128,29 +119,6 @@ export const useSettingsStore = defineStore('settings', () => {
       return foundSubsettingsGroup
     }
   }
-  const getClockSize = computed<ClockSize>(() => {
-    // TODO: replace to clock store
-    const clockSettings: SettingsGroup | undefined = settingsState.appSettings.find(
-      (group) => group.title === 'clock'
-    )
-    if (!clockSettings) {
-      throw new Error('getClockSize: "clock" settings not found.')
-    }
-    const sizeSetting: SettingMultiple | undefined = clockSettings.settings.find(
-      (setting): setting is SettingMultiple =>
-        typeof setting.selectedValue === 'string' &&
-        setting.title === 'size' &&
-        isClockSize(setting.selectedValue) &&
-        'values' in setting
-    )
-    if (!sizeSetting) {
-      throw new Error('getClockSize: "clock size" setting not found.')
-    }
-    if (!isClockSize(sizeSetting.selectedValue)) {
-      throw new Error('getClockSize: "selected size" setting value is not the "ClockSize" type.')
-    }
-    return sizeSetting.selectedValue
-  })
 
   const getExtensionsGroup = computed<SubsettingsGroup>(() => {
     const extensions: SettingsGroup | undefined = settingsState.appSettings.find(
@@ -349,10 +317,6 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  const setClockVisible = (value: boolean) => {
-    settingsState.isClockVisible = value
-  }
-
   const setPomodoroSetting = (settingTitle: string, newValue: number | string | boolean) => {
     const pomodoroSettingsGroup = findSettingsGroupByName('extensions', 'pomodoro')
 
@@ -370,12 +334,6 @@ export const useSettingsStore = defineStore('settings', () => {
     foundSetting.selectedValue = newValue
   }
 
-  const timerClockVisible = () => {
-    clearTimeout(settingsState.clockVisibleTimerId)
-    setClockVisible(true)
-    settingsState.clockVisibleTimerId = window.setTimeout(() => setClockVisible(false), 2000)
-  }
-
   watch(
     () => settingsState.appSettings,
     () => {
@@ -387,7 +345,6 @@ export const useSettingsStore = defineStore('settings', () => {
   return {
     settingsState,
     findSettingsGroupByName,
-    getClockSize,
     getExtensionsGroup,
     getPomodoroSettingsList,
     getFocusTimerMinutes,
@@ -401,9 +358,7 @@ export const useSettingsStore = defineStore('settings', () => {
     setNavChecked,
     selectSubsetting,
     setSetting,
-    setClockVisible,
     setPomodoroSetting,
-    timerClockVisible,
     updateSetting,
   }
 })

@@ -5,11 +5,11 @@ import { useSettingsStore } from '@/stores/settings'
 import { useClockStore } from '@/stores/clock'
 
 const settings = useSettingsStore()
-const { settingsState, getClockSize } = storeToRefs(settings)
-const { isSettings, isClockVisible } = toRefs(settingsState.value)
+const { settingsState } = storeToRefs(settings)
+const { isSettings } = toRefs(settingsState.value)
 
 const clock = useClockStore()
-const { clockIntervalId, currentTime } = storeToRefs(clock)
+const { clockIntervalId, currentTime, isClockVisible, getClockSize } = storeToRefs(clock)
 
 const updateCurrentTime = () => {
   const date = new Date()

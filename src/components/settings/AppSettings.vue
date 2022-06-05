@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs } from 'vue'
+import { toRefs, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import AppIcon from '@/components/global/AppIcon.vue'
@@ -9,6 +9,12 @@ import SettingsView from '@/components/settings/SettingsView.vue'
 const settings = useSettingsStore()
 const { settingsState } = storeToRefs(settings)
 const { appSettings, isSettings } = toRefs(settingsState.value)
+
+watch(isSettings, () => {
+  if (isSettings.value === true) {
+    settings.setNavChecked(0)
+  }
+})
 </script>
 
 <template>

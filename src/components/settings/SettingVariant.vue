@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type {
-  SettingsGroupKind,
-  SettingKind,
-  SubsettingsGroup,
-  SettingsGroup,
-} from '@/types/SettingsState'
+import type { SettingsGroupKind, SettingKind, SettingsGroup } from '@/types/SettingsState'
 import { isSettingMultiple, isSettingToggle, isSettingNumber } from '@/types/SettingsState'
 import { useSettingsStore } from '@/stores/settings'
+import { useClockStore } from '@/stores/clock'
 import AppIcon from '@/components/global/AppIcon.vue'
 
 const props = defineProps<{
@@ -17,6 +13,7 @@ const props = defineProps<{
 }>()
 
 const settings = useSettingsStore()
+const clock = useClockStore()
 
 const settingValue = ref(0)
 onMounted(() => {
@@ -81,7 +78,7 @@ function changeSetting(
   settings.updateSetting(newValue, groupOfSettings, settingName, subsettingGroup)
 
   if (props.group.title === 'clock') {
-    settings.timerClockVisible()
+    clock.timerClockVisible()
   }
 }
 
