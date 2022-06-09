@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import type { ExtensionLink } from '@/types/ExtensionsState'
 import { useExtensionsStore } from '@/stores/extensions'
-import { useSettingsStore } from '@/stores/settings'
 import AppIcon from '@/components/global/AppIcon.vue'
 
 const props = defineProps<{
@@ -11,7 +10,6 @@ const props = defineProps<{
 }>()
 
 const extensions = useExtensionsStore()
-const appSettings = useSettingsStore()
 
 function toggleExtension(extension: ExtensionLink) {
   extensions.toggleExtensionActivity(extension.id)
@@ -23,8 +21,9 @@ const transitionSeconds = computed<string>(() => {
 })
 
 function isExtensionEnabled(extentionTitle: string) {
-  return appSettings.getExtensionsGroup.settings.find((setting) => setting.title === extentionTitle)
-    ?.selectedValue
+  return extensions.getExtensionsSettings.settings.find(
+    (setting) => setting.title === extentionTitle
+  )?.selectedValue
 }
 </script>
 

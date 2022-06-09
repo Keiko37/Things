@@ -1,11 +1,6 @@
-import { reactive, computed, watch } from 'vue'
+import { reactive, watch } from 'vue'
 import { defineStore } from 'pinia'
-import type {
-  SettingsState,
-  SettingsGroupKind,
-  SettingsGroup,
-  SubsettingsGroup,
-} from '@/types/SettingsState'
+import type { SettingsState, SettingsGroupKind, SettingsGroup } from '@/types/SettingsState'
 import { isSubsettingsGroup } from '@/types/SettingsState'
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -119,19 +114,6 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  const getExtensionsGroup = computed<SubsettingsGroup>(() => {
-    const extensions: SettingsGroup | undefined = settingsState.appSettings.find(
-      (group: SettingsGroup | SubsettingsGroup) => group.title === 'extensions'
-    )
-    if (!extensions) {
-      throw new Error('getExtensionGroup: "extensions" subsettings group not found.')
-    }
-    if (!isSubsettingsGroup(extensions)) {
-      throw new Error('getExtensionsGroup: "extensions is not subsetting group."')
-    }
-    return extensions
-  })
-
   const setAppSettings = (value: SettingsGroupKind[]): void => {
     settingsState.appSettings = value
   }
@@ -236,7 +218,6 @@ export const useSettingsStore = defineStore('settings', () => {
   return {
     settingsState,
     findSettingsGroupByName,
-    getExtensionsGroup,
     setAppSettings,
     toggleIsSettings,
     setNavChecked,
