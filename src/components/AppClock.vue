@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { onMounted, onUnmounted, toRefs } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
 import { useClockStore } from '@/stores/clock'
 
 const settings = useSettingsStore()
-const { settingsState } = storeToRefs(settings)
-const { isSettings } = toRefs(settingsState.value)
+const { isSettings } = storeToRefs(settings)
 
 const clock = useClockStore()
 const { clockIntervalId, currentTime, isClockVisible, getClockSize } = storeToRefs(clock)

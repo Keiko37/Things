@@ -11,7 +11,7 @@ type TimerMode = 'focus' | 'rest'
 
 const pomodoro = usePomodoroStore()
 const appSettings = useSettingsStore()
-const { setNavChecked, findSettingsGroupByName, selectSubsetting, toggleIsSettings } = appSettings
+const { setGroupChecked, findSettingsGroupByName, toggleIsSettings } = appSettings
 
 const {
   numberOfPomodorosBeforeLongRest,
@@ -102,13 +102,15 @@ function stopTimer() {
 }
 
 function openSettings() {
-  setNavChecked(1)
+  setGroupChecked(1)
   const extensionsSettingsGroup = findSettingsGroupByName('extensions')
-  const pomodoroSettings = findSettingsGroupByName('extensions', 'pomodoro')
-  if (!isSubsettingsGroup(extensionsSettingsGroup)) {
+  const pomodoroSettings = findSettingsGroupByName('pomodoro')
+  if (extensionsSettingsGroup !== undefined && !isSubsettingsGroup(extensionsSettingsGroup)) {
     throw new Error('openSettings: wrong type of extensions settings group')
   }
-  selectSubsetting(extensionsSettingsGroup, pomodoroSettings.id)
+  if (pomodoroSettings) {
+    setGroupChecked(pomodoroSettings.id)
+  }
   toggleIsSettings()
 }
 

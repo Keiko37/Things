@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { onMounted, toRefs } from 'vue'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import type { SettingsGroupKind } from '@/types/SettingsState'
 
-const settingsStore = useSettingsStore()
-const { settingsState } = storeToRefs(settingsStore)
-const { appSettings, defaultSettings } = toRefs(settingsState.value)
+const settings = useSettingsStore()
+const { appSettings, defaultSettings } = storeToRefs(settings)
 
 function loadSettingsFromStorage(): SettingsGroupKind[] | null {
   let settingsFromStorage = localStorage.getItem('appSettings')
@@ -21,7 +20,7 @@ onMounted(() => {
     typeof parsedSettings !== 'object' ||
     (Array.isArray(parsedSettings) && parsedSettings.length === 0)
   ) {
-    localStorage.setItem('appSettings', JSON.stringify(defaultSettings.value))
+    localStorage.setItem('appSettings', JSON.stringify(settings.defaultSettings))
   }
 
   if (appSettings.value.length === 0) {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { SettingsGroupKind, SettingKind, SettingsGroup } from '@/types/SettingsState'
+import type { SettingsGroupKind, SettingKind } from '@/types/SettingsState'
 import { isSettingMultiple, isSettingToggle, isSettingNumber } from '@/types/SettingsState'
 import { useSettingsStore } from '@/stores/settings'
 import { useClockStore } from '@/stores/clock'
@@ -9,7 +9,6 @@ import AppIcon from '@/components/global/AppIcon.vue'
 const props = defineProps<{
   group: SettingsGroupKind
   setting: SettingKind
-  subsettingGroup?: SettingsGroup
 }>()
 
 const settings = useSettingsStore()
@@ -17,16 +16,12 @@ const clock = useClockStore()
 
 const settingValue = ref(0)
 onMounted(() => {
-  if (typeof props.setting.selectedValue === 'number') {
+  if (isSettingNumber(props.setting)) {
     settingValue.value = props.setting.selectedValue
   }
 })
-function changeSetting(
-  event: Event,
-  groupOfSettings: SettingsGroupKind,
-  settingName: string,
-  subsettingGroup?: SettingsGroup
-) {
+
+function changeSetting(event: Event) {
   let newValue: boolean | number | string | undefined
 
   if (event.target === null) {
@@ -45,63 +40,62 @@ function changeSetting(
     default:
       throw new Error('changeSetting: wrong setting type.')
   }
-  // TODO: recheck notifications code section, move it inside new function
-  if (
-    props.setting.title === 'notifications' &&
-    (event.target as HTMLInputElement).checked &&
-    newValue !== undefined
-  ) {
-    if (Notification.permission === 'granted') {
-      settings.updateSetting(newValue, groupOfSettings, settingName, subsettingGroup)
-    }
 
-    if (Notification.permission === 'denied') {
-      setTimeout(() => ((event.target as HTMLInputElement).checked = false), 400)
-    }
-
-    if (Notification.permission === 'default') {
-      Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-          settings.updateSetting(true, groupOfSettings, settingName, subsettingGroup)
-        }
-        if (permission === 'denied') {
-          ;(event.target as HTMLInputElement).checked = false
-          settings.updateSetting(false, groupOfSettings, settingName, subsettingGroup)
-        }
-      })
-    }
+  const isNotificationSetting = notificationSettingHandler(event, newValue)
+  if (isNotificationSetting) {
     return
   }
+
   if (newValue === undefined) {
     throw new Error('changeSetting: new value of setting is undefined.')
   }
-  settings.updateSetting(newValue, groupOfSettings, settingName, subsettingGroup)
+  settings.setSetting(newValue, props.group.id, props.setting.title)
 
   if (props.group.title === 'clock') {
     clock.timerClockVisible()
   }
 }
 
+function notificationSettingHandler(event: Event, newValue: string | number | boolean) {
+  if (
+    props.setting.title !== 'notifications' ||
+    !(event.target as HTMLInputElement).checked ||
+    newValue === undefined
+  ) {
+    return false
+  }
+  if (Notification.permission === 'granted') {
+    settings.setSetting(newValue, props.group.id, props.setting.title)
+  }
+
+  if (Notification.permission === 'denied') {
+    setTimeout(() => ((event.target as HTMLInputElement).checked = false), 400)
+  }
+
+  if (Notification.permission === 'default') {
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        settings.setSetting(true, props.group.id, props.setting.title)
+      }
+      if (permission === 'denied') {
+        ;(event.target as HTMLInputElement).checked = false
+        settings.setSetting(false, props.group.id, props.setting.title)
+      }
+    })
+  }
+  return true
+}
+
 function incrementNumber() {
   ++settingValue.value
-  changeSetting(
-    { type: 'number' } as Event,
-    props.group,
-    props.setting.title,
-    props.subsettingGroup
-  )
+  changeSetting({ type: 'number' } as Event)
 }
 function decrementNumber() {
   if (settingValue.value <= 0) {
     return
   }
   --settingValue.value
-  changeSetting(
-    { type: 'number' } as Event,
-    props.group,
-    props.setting.title,
-    props.subsettingGroup
-  )
+  changeSetting({ type: 'number' } as Event)
 }
 </script>
 
@@ -118,7 +112,7 @@ function decrementNumber() {
           :name="setting.title"
           :value="item.value"
           :checked="item.value === setting.selectedValue"
-          @click="changeSetting($event, group, setting.title, subsettingGroup)"
+          @click="changeSetting($event)"
         />
         <label :for="item.title">{{ item.title }}</label>
       </div>
@@ -130,7 +124,7 @@ function decrementNumber() {
         :id="'checkbox__' + setting.title"
         type="checkbox"
         class="toggle"
-        @change="changeSetting($event, group, setting.title, subsettingGroup)"
+        @change="changeSetting($event)"
       />
       <label :for="'checkbox__' + setting.title" class="toggle-trail">
         <span class="toggle-handler"></span>

@@ -1,27 +1,31 @@
 <script setup lang="ts">
-import { toRefs, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import AppIcon from '@/components/global/AppIcon.vue'
-import SettingsNav from '@/components/settings/SettingsNav.vue'
+import SettingsNavItem from '@/components/settings/SettingsNavItem.vue'
 import SettingsView from '@/components/settings/SettingsView.vue'
+import { computed, watch } from 'vue'
 
 const settings = useSettingsStore()
-const { settingsState } = storeToRefs(settings)
-const { appSettings, isSettings } = toRefs(settingsState.value)
+const { appSettings, isSettings, checkedGroupId, expandedGroupId } = storeToRefs(settings)
 
-watch(isSettings, () => {
-  if (isSettings.value === true) {
-    settings.setNavChecked(0)
+const activeGroup = computed(
+  () => checkedGroupId.value && settings.findSettingsGroupById(checkedGroupId.value)
+)
+
+settings.setGroupChecked(checkedGroupId.value || 1)
+watch(isSettings, (newValue) => {
+  if (!newValue) {
+    checkedGroupId.value = null
+    expandedGroupId.value = null
+  } else {
+    !checkedGroupId.value && settings.setGroupChecked(checkedGroupId.value || 1)
   }
 })
 </script>
 
 <template>
-  <span
-    @click.stop="settings.toggleIsSettings"
-    class="material-icons material-icons-round md-light icon-btn"
-  >
+  <span @click.stop="settings.toggleIsSettings" class="icon-btn">
     <AppIcon name="settings" />
   </span>
   <transition name="animation">
@@ -31,16 +35,11 @@ watch(isSettings, () => {
       </div>
       <div class="settings__main">
         <ul class="settings__nav">
-          <SettingsNav
-            v-for="(group, idx) in appSettings"
-            :key="group.id"
-            :group="group"
-            :indexInArray="idx"
-          />
+          <SettingsNavItem v-for="group in appSettings" :key="group.id" :group="group" />
         </ul>
 
         <div class="settings__view">
-          <SettingsView v-for="group in appSettings" :key="group.id" :group="group" />
+          <SettingsView v-if="activeGroup" :group="activeGroup" />
         </div>
       </div>
     </div>

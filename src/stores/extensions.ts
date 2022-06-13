@@ -23,7 +23,7 @@ export const useExtensionsStore = defineStore('extensions', () => {
   const settings = useSettingsStore()
 
   const getExtensionsSettings = computed<SubsettingsGroup>(() => {
-    const extensions: SettingsGroup | undefined = settings.settingsState.appSettings.find(
+    const extensions: SettingsGroup | undefined = settings.appSettings.find(
       (group: SettingsGroup | SubsettingsGroup) => group.title === 'extensions'
     )
     if (!extensions) {

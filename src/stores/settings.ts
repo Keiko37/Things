@@ -1,228 +1,204 @@
-import { reactive, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import type { SettingsState, SettingsGroupKind, SettingsGroup } from '@/types/SettingsState'
+import type { SettingsGroupKind } from '@/types/SettingsState'
+
 import { isSubsettingsGroup } from '@/types/SettingsState'
 
 export const useSettingsStore = defineStore('settings', () => {
-  const settingsState: SettingsState = reactive({
-    isSettings: false,
-    checkedNavIndex: null,
-    checkedSubsettingIndex: null,
-    appSettings: [],
-    defaultSettings: [
-      {
-        id: 0,
-        title: 'clock',
-        groupChecked: false,
-        settings: [
-          {
-            title: 'size',
-            values: [
-              { title: 'small', value: '6rem' },
-              { title: 'medium', value: '11rem' },
-              { title: 'large', value: '15rem' },
-            ],
-            type: 'multiple',
-            selectedValue: '11rem',
-          },
-        ],
-      },
-      {
-        id: 1,
-        title: 'extensions',
-        groupChecked: false,
-        settings: [
-          {
-            title: 'pomodoro',
-            selectedValue: true,
-            type: 'toggle',
-          },
-        ],
-        subSettings: [
-          {
-            id: 0,
-            title: 'pomodoro',
-            groupChecked: false,
-            settings: [
-              {
-                title: 'loop',
-                selectedValue: false,
-                type: 'toggle',
-              },
-              {
-                title: 'notifications',
-                selectedValue: false,
-                type: 'toggle',
-              },
-              {
-                title: 'focus timer duration',
-                selectedValue: 25,
-                type: 'number',
-              },
-              {
-                title: 'rest timer duration',
-                selectedValue: 5,
-                type: 'number',
-              },
-              {
-                title: 'long rest timer duration',
-                selectedValue: 15,
-                type: 'number',
-              },
-              {
-                title: 'a long break in every one',
-                selectedValue: 4,
-                type: 'number',
-              },
-            ],
-          },
-        ],
-      },
-      // {
-      //   id: 2,
-      //   title: 'fullscreen',
-      //   groupChecked: false,
-      //   settings: [],
-      // },
-    ],
-  })
+  const appSettings = ref<SettingsGroupKind[]>([])
+  const defaultSettings: SettingsGroupKind[] = [
+    {
+      id: 1,
+      title: 'clock',
+      settings: [
+        {
+          title: 'size',
+          values: [
+            { title: 'small', value: '6rem' },
+            { title: 'medium', value: '11rem' },
+            { title: 'large', value: '15rem' },
+          ],
+          type: 'multiple',
+          selectedValue: '11rem',
+        },
+      ],
+    },
+    {
+      id: 2,
+      title: 'extensions',
+      settings: [
+        {
+          title: 'pomodoro',
+          selectedValue: true,
+          type: 'toggle',
+        },
+      ],
+      subSettings: [
+        {
+          id: 2.1,
+          title: 'pomodoro',
+          settings: [
+            {
+              title: 'loop',
+              selectedValue: false,
+              type: 'toggle',
+            },
+            {
+              title: 'notifications',
+              selectedValue: false,
+              type: 'toggle',
+            },
+            {
+              title: 'focus timer duration',
+              selectedValue: 25,
+              type: 'number',
+            },
+            {
+              title: 'rest timer duration',
+              selectedValue: 5,
+              type: 'number',
+            },
+            {
+              title: 'long rest timer duration',
+              selectedValue: 15,
+              type: 'number',
+            },
+            {
+              title: 'a long break in every one',
+              selectedValue: 4,
+              type: 'number',
+            },
+          ],
+        },
+      ],
+    },
+    // {
+    //   id: 3,
+    //   title: 'fullscreen',
+    //   settings: [],
+    // },
+  ]
 
-  const findSettingsGroupByName = (settingsGroupTitle: string, subsettingsGroupTitle?: string) => {
-    const foundSettingsGroup: SettingsGroupKind | undefined = settingsState.appSettings.find(
-      (settingsGroup: SettingsGroup) => settingsGroup.title === settingsGroupTitle
-    )
-    if (foundSettingsGroup === undefined) {
-      throw new Error(`findSettingsGroupByName: settings group ${settingsGroupTitle} not found.`)
-    }
-    if (subsettingsGroupTitle === undefined) {
-      return foundSettingsGroup
-    } else {
-      if (!isSubsettingsGroup(foundSettingsGroup)) {
-        throw new Error(
-          'findSettingsGroupByName: settings group ${settingsGroupTitle} not equal type "SubsettingsGroup".'
-        )
+  /** Find settings group by passed title
+   * @nestedGroup if we want to find a setting inside a nested group
+   */
+  const findSettingsGroupByName = (groupTitle: string, nestedGroup?: SettingsGroupKind[]) => {
+    const target = nestedGroup || appSettings.value
+
+    let foundGroup: SettingsGroupKind | undefined
+    target.forEach((group) => {
+      if (group.title === groupTitle) {
+        foundGroup = group
       }
-      const foundSubsettingsGroup = foundSettingsGroup.subSettings.find(
-        (subsettingsGroup) => subsettingsGroup.title === subsettingsGroupTitle
-      )
-      if (foundSubsettingsGroup === undefined) {
-        throw new Error(
-          `findSettingsGroupByName: subsetting group ${subsettingsGroupTitle} not found.`
-        )
+      if (isSubsettingsGroup(group)) {
+        const foundNestedGroup = findSettingsGroupByName(groupTitle, group.subSettings)
+        if (foundNestedGroup !== undefined) {
+          foundGroup = foundNestedGroup
+        }
       }
-      return foundSubsettingsGroup
-    }
+    })
+    return foundGroup
   }
 
-  const setAppSettings = (value: SettingsGroupKind[]): void => {
-    settingsState.appSettings = value
+  /** Find settings group by passed id
+   * @nestedGroup if we want to find a setting inside a nested group
+   */
+  const findSettingsGroupById = (settingsGroupId: number, nestedGroup?: SettingsGroupKind[]) => {
+    const target = nestedGroup || appSettings.value
+
+    let foundGroup: SettingsGroupKind | undefined
+    target.forEach((group) => {
+      if (group.id === settingsGroupId) {
+        foundGroup = group
+      }
+      if (isSubsettingsGroup(group)) {
+        const foundNestedGroup = findSettingsGroupById(settingsGroupId, group.subSettings)
+        if (foundNestedGroup !== undefined) {
+          foundGroup = foundNestedGroup
+        }
+      }
+    })
+    return foundGroup
   }
 
-  const toggleIsSettings = (): void => {
-    settingsState.isSettings = !settingsState.isSettings
+  /** Set all settings */
+  const setAppSettings = (newValue: SettingsGroupKind[]) => {
+    appSettings.value = newValue
   }
 
-  const setNavChecked = (idx?: number) => {
-    if (typeof settingsState.checkedNavIndex === 'number') {
-      settingsState.appSettings[settingsState.checkedNavIndex].groupChecked = false
-    }
-    if (idx === undefined) {
-      // if we don' have index as entry parameter so let's just uncheck nav.
+  const isSettings = ref<boolean>(false)
+  /** Toggle a boolean settings window variable */
+  const toggleIsSettings = () => {
+    isSettings.value = !isSettings.value
+  }
+
+  const checkedGroupId = ref<number | null>(null)
+  /** Set checked group id to ref variable or set null */
+  const setGroupChecked = (id?: number) => {
+    if (id === undefined) {
+      checkedGroupId.value = null
       return
     }
-    // settingsState.isCheckedSubsetting = false // idk what's this for now
-    settingsState.appSettings[idx].groupChecked = true
-    settingsState.checkedNavIndex = idx
+    checkedGroupId.value = id
   }
 
-  const selectSubsetting = (group: SettingsGroupKind, subsettingIndex: number) => {
-    // TODO: maybe pass only the targetGroupTitle and not the whole group
-    const foundGroup = settingsState.appSettings.find(
-      (groupOfSettings) => groupOfSettings.title === group.title
-    )
-    let foundSubsetting: SettingsGroup
-    if (!foundGroup) {
-      throw new Error('setSubsettingsChecked: group not found.')
+  const expandedGroupId = ref<number | null>(null)
+  /** Set expanded group id to ref variable or set null */
+  const setExpandedGroupId = (id?: number) => {
+    if (id === undefined) {
+      expandedGroupId.value = null
+      return
     }
-    if (isSubsettingsGroup(foundGroup)) {
-      foundSubsetting = foundGroup.subSettings[subsettingIndex]
-      foundSubsetting.groupChecked = true
-    }
-    if (settingsState.checkedSubsettingIndex && isSubsettingsGroup(foundGroup)) {
-      foundGroup.subSettings[settingsState.checkedSubsettingIndex].groupChecked = false
-    }
-    settingsState.checkedSubsettingIndex = subsettingIndex
+    expandedGroupId.value = id
   }
 
-  const updateSetting = (
-    newValue: number | string | boolean,
-    groupOfSettings: SettingsGroup,
-    settingName: string,
-    subsettingGroup?: SettingsGroup
-  ) => {
-    setSetting(newValue, groupOfSettings, settingName, subsettingGroup)
-    setNavChecked() // uncheck all nav's
-    const subsettingIdx = settingsState.checkedSubsettingIndex
-    const settingIdx = settingsState.checkedNavIndex
-    if (settingIdx !== null) {
-      setNavChecked(settingIdx)
-    }
-    if (subsettingGroup !== undefined && settingIdx !== null && subsettingIdx !== null) {
-      selectSubsetting(settingsState.appSettings[settingIdx], subsettingIdx)
-    }
-  }
-
+  /** Check setting value and new value types, then paste new value to setting */
   const setSetting = (
     newValue: number | string | boolean,
-    groupOfSettings: SettingsGroup,
-    settingName: string,
-    subsettingGroup: SettingsGroup | undefined
+    settingsGroupId: number,
+    settingName: string
   ) => {
-    const foundGroup = settingsState.appSettings.find(
-      (group) => group.title === groupOfSettings.title
-    )
+    const foundGroup = findSettingsGroupById(settingsGroupId)
     if (!foundGroup) {
       throw new Error('setSetting: settings group not found.')
     }
-    if (!subsettingGroup) {
-      const foundSetting = foundGroup.settings.find((setting) => setting.title === settingName)
-      if (foundSetting) {
-        foundSetting.selectedValue = newValue
-      }
-      return
+    const foundSetting = foundGroup.settings.find((setting) => setting.title === settingName)
+    if (!foundSetting) {
+      throw new Error('setSetting: setting not found.')
     }
-    if (!isSubsettingsGroup(foundGroup)) {
-      throw new Error('setSetting: founded setting group not equal "SubsettingGroup" type.')
-    }
-    const foundSubsettingGroup = foundGroup.subSettings.find(
-      (subsettings) => subsettings.title === subsettingGroup.title
-    )
-    if (foundSubsettingGroup) {
-      const foundSubsetting = foundSubsettingGroup.settings.find(
-        (subsetting) => subsetting.title === settingName
+
+    const settingValueType = typeof foundSetting.selectedValue
+    const newValueType = typeof newValue
+
+    if (settingValueType === newValueType) {
+      foundSetting.selectedValue = newValue
+    } else {
+      throw new Error(
+        `setSetting: type of setting value is ${settingValueType} but must be ${newValueType}.`
       )
-      if (foundSubsetting) {
-        foundSubsetting.selectedValue = newValue
-      }
     }
   }
 
   watch(
-    () => settingsState.appSettings,
+    () => appSettings.value,
     () => {
-      localStorage.setItem('appSettings', JSON.stringify(settingsState.appSettings))
+      localStorage.setItem('appSettings', JSON.stringify(appSettings.value))
     },
     { flush: 'post', deep: true }
   )
 
   return {
-    settingsState,
-    findSettingsGroupByName,
+    defaultSettings,
+    appSettings,
     setAppSettings,
-    toggleIsSettings,
-    setNavChecked,
-    selectSubsetting,
+    findSettingsGroupByName,
+    findSettingsGroupById,
     setSetting,
-    updateSetting,
+    isSettings,
+    toggleIsSettings,
+    checkedGroupId, // idk for now need it or not
+    setGroupChecked,
+    expandedGroupId,
+    setExpandedGroupId,
   }
 })

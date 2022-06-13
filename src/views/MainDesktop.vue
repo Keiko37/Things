@@ -9,15 +9,15 @@ import Bookmarks from '@/components/bookmarks/BookmarksView.vue'
 import Extensions from '@/components/extensions/AppExtensions.vue'
 import Pomodoro from '@/components/extensions/pomodoro/ExtensionPomodoro.vue'
 
-const appSettings = useSettingsStore()
+const settings = useSettingsStore()
 const bookmarks = useBookmarksStore()
 const extensions = useExtensionsStore()
 
 function closeWindows(event: Event) {
   let settingsOnFocus = focusWindow(event, 'settings', 'desktop')
   let bookmarksOnFocus = focusWindow(event, 'bookmarks', 'desktop')
-  if (!settingsOnFocus && appSettings.settingsState.isSettings) {
-    appSettings.toggleIsSettings()
+  if (!settingsOnFocus && settings.isSettings) {
+    settings.toggleIsSettings()
   }
   if (!bookmarksOnFocus && bookmarks.bookmarksState.isBookmarks) {
     bookmarks.toggleBookmarks(false)

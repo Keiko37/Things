@@ -1,4 +1,4 @@
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
 import type { SettingsGroup, SettingMultiple } from '@/types/SettingsState'
@@ -17,7 +17,7 @@ export const useClockStore = defineStore('clock', () => {
 
   const getClockSize = computed<ClockSize>(() => {
     // TODO: replace to clock store
-    const clockSettings: SettingsGroup | undefined = settingsStore.settingsState.appSettings.find(
+    const clockSettings: SettingsGroup | undefined = settingsStore.appSettings.find(
       (group) => group.title === 'clock'
     )
     if (!clockSettings) {

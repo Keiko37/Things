@@ -1,17 +1,8 @@
-interface SettingsState {
-  isSettings: boolean
-  checkedNavIndex: number | null
-  checkedSubsettingIndex: number | null
-  appSettings: SettingsGroupKind[]
-  defaultSettings: SettingsGroupKind[]
-}
-
 type SettingsGroupKind = SettingsGroup | SubsettingsGroup
 
 interface SettingsGroup {
   id: number
   title: string
-  groupChecked: boolean
   settings: SettingKind[]
 }
 
@@ -65,7 +56,6 @@ interface SettingMultipleValue {
 }
 
 export type {
-  SettingsState,
   SettingsGroupKind,
   SettingsGroup,
   SubsettingsGroup,
