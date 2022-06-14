@@ -1,7 +1,6 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import type { SettingsGroupKind } from '@/types/SettingsState'
-
 import { isSubsettingsGroup } from '@/types/SettingsState'
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -80,7 +79,7 @@ export const useSettingsStore = defineStore('settings', () => {
   ]
 
   /** Find settings group by passed title
-   * @nestedGroup if we want to find a setting inside a nested group
+   * @param nestedGroup - if we want to find a setting inside a nested group
    */
   const findSettingsGroupByName = (groupTitle: string, nestedGroup?: SettingsGroupKind[]) => {
     const target = nestedGroup || appSettings.value
@@ -101,7 +100,7 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   /** Find settings group by passed id
-   * @nestedGroup if we want to find a setting inside a nested group
+   * @param nestedGroup - if we want to find a setting inside a nested group
    */
   const findSettingsGroupById = (settingsGroupId: number, nestedGroup?: SettingsGroupKind[]) => {
     const target = nestedGroup || appSettings.value

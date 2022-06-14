@@ -10,8 +10,8 @@ import BorderButton from '@/components/BorderButton.vue'
 type TimerMode = 'focus' | 'rest'
 
 const pomodoro = usePomodoroStore()
-const appSettings = useSettingsStore()
-const { setGroupChecked, findSettingsGroupByName, toggleIsSettings } = appSettings
+const settings = useSettingsStore()
+const { setGroupChecked, findSettingsGroupByName, toggleIsSettings } = settings
 
 const {
   numberOfPomodorosBeforeLongRest,

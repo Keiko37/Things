@@ -8,7 +8,10 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   const { findSettingsGroupByName } = settingsStore
 
   const getPomodoroSettingsList = computed<SettingKind[]>(() => {
-    const pomodoroSettings = findSettingsGroupByName('extensions', 'pomodoro')
+    const pomodoroSettings = findSettingsGroupByName('pomodoro')
+    if (!pomodoroSettings) {
+      throw new Error('getPomodoroSettingsList: pomodoro settings group not found.')
+    }
     return pomodoroSettings.settings
   })
 
@@ -92,17 +95,21 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
   })
 
   const setPomodoroSetting = (settingTitle: string, newValue: number | string | boolean) => {
-    const pomodoroSettingsGroup = findSettingsGroupByName('extensions', 'pomodoro')
-
+    const pomodoroSettingsGroup = findSettingsGroupByName('pomodoro')
+    if (!pomodoroSettingsGroup) {
+      throw new Error('setPomodoroSetting: pomodoro settings group not found.')
+    }
     const foundSetting = pomodoroSettingsGroup.settings.find(
       (setting) => setting.title === settingTitle
     )
     if (foundSetting === undefined) {
       throw new Error('setPomodoroSetting: pomodoro setting not found.')
     }
-    if (typeof foundSetting.selectedValue !== typeof newValue) {
+    const selectedValueType = typeof foundSetting.selectedValue
+    const newValueType = typeof newValue
+    if (selectedValueType !== newValueType) {
       throw new Error(
-        'setPomodoroSetting: type of the settings selected value is not equal to the type of the new value.'
+        `setPomodoroSetting: type of the settings selected value "${selectedValueType}" is not equal to the type of the new value "${newValueType}".`
       )
     }
     foundSetting.selectedValue = newValue
