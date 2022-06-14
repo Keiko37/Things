@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Extension from '@/components/extensions/AppExtension.vue'
 import { useExtensionsStore } from '@/stores/extensions'
 import AppIcon from '@/components/global/AppIcon.vue'
+import Extension from '@/components/extensions/AppExtension.vue'
 
 const extensions = useExtensionsStore()
 </script>
@@ -15,7 +15,7 @@ const extensions = useExtensionsStore()
   </span>
   <div class="extensions">
     <Extension
-      v-for="(extension, idx) in extensions.extensionsState.extensionsLinks"
+      v-for="(extension, idx) in extensions.extensionsLinks"
       :key="extension.id"
       :extension="extension"
       :orderIndex="idx"

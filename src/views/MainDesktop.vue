@@ -50,7 +50,7 @@ function focusWindow(event: Event, classForFinding: string, stopClass: string) {
 
     <main class="desktop__main">
       <Bookmarks />
-      <Pomodoro v-if="extensions.extensionsState.isPomodoroOpened" />
+      <Pomodoro v-if="extensions.isPomodoroOpened" />
       <Clock />
     </main>
     <footer class="desktop__footer">

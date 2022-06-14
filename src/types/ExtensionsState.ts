@@ -1,9 +1,3 @@
-interface ExtensionsState {
-  isExtensions: boolean
-  isPomodoroOpened: boolean
-  extensionsLinks: ExtensionLink[]
-}
-
 interface ExtensionLink {
   id: number
   active: boolean
@@ -12,4 +6,4 @@ interface ExtensionLink {
   link: string
 }
 
-export type { ExtensionsState, ExtensionLink }
+export type { ExtensionLink }

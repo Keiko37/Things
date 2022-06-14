@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import type { ExtensionLink } from '@/types/ExtensionsState'
 import { useExtensionsStore } from '@/stores/extensions'
 import AppIcon from '@/components/global/AppIcon.vue'
@@ -10,28 +11,26 @@ const props = defineProps<{
 }>()
 
 const extensions = useExtensionsStore()
-
-function toggleExtension(extension: ExtensionLink) {
-  extensions.toggleExtensionActivity(extension.id)
-}
+const { getExtensionsSettings } = storeToRefs(extensions)
+const { toggleExtensionActivity } = extensions
 
 const transitionSeconds = computed<string>(() => {
   const resultNumber = props.orderIndex * 0.05
   return resultNumber + 's'
 })
 
-function isExtensionEnabled(extentionTitle: string) {
-  return extensions.getExtensionsSettings.settings.find(
-    (setting) => setting.title === extentionTitle
-  )?.selectedValue
+/** Finds the setting in the extension settings by extension link and looks that it's active */
+function isExtensionEnabled(extensionLink: string) {
+  return getExtensionsSettings.value.settings.find((setting) => setting.title === extensionLink)
+    ?.selectedValue
 }
 </script>
 
 <template>
   <transition :style="{ 'transition-delay': transitionSeconds }" name="item">
     <div
-      v-if="isExtensionEnabled(extension.link) && extensions.extensionsState.isExtensions"
-      @click="toggleExtension(extension)"
+      v-if="isExtensionEnabled(extension.link) && extensions.isExtensions"
+      @click="toggleExtensionActivity(extension.id)"
       :data-title="extension.title"
       class="tooltip"
     >

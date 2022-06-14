@@ -1,44 +1,50 @@
 import { defineStore } from 'pinia'
-import { reactive, computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { SettingsGroup, SubsettingsGroup } from '@/types/SettingsState'
-import type { ExtensionsState } from '@/types/ExtensionsState'
-import { useSettingsStore } from '@/stores/settings'
+import type { ExtensionLink } from '@/types/ExtensionsState'
 import { isSubsettingsGroup } from '@/types/SettingsState'
+import { useSettingsStore } from '@/stores/settings'
 
 export const useExtensionsStore = defineStore('extensions', () => {
-  const extensionsState: ExtensionsState = reactive({
-    isExtensions: false,
-    isPomodoroOpened: false,
-    extensionsLinks: [
-      {
-        id: 1,
-        active: false,
-        title: 'pomodoro timer',
-        icon: 'timer',
-        link: 'pomodoro',
-      },
-    ],
-  })
+  const extensionsLinks = ref<ExtensionLink[]>([
+    {
+      id: 1,
+      active: false,
+      title: 'pomodoro timer',
+      icon: 'timer',
+      link: 'pomodoro',
+    },
+  ])
+  const isPomodoroOpened = computed<boolean>(() => findExtensionByName('pomodoro').active)
 
   const settings = useSettingsStore()
-
-  const getExtensionsSettings = computed<SubsettingsGroup>(() => {
-    const extensions: SettingsGroup | undefined = settings.appSettings.find(
-      (group: SettingsGroup | SubsettingsGroup) => group.title === 'extensions'
+  const findExtensionByName = (extensionLink: string): ExtensionLink => {
+    const foundExtension: ExtensionLink | undefined = extensionsLinks.value.find(
+      (extension) => extension.link === extensionLink
     )
+    if (!foundExtension) {
+      throw new Error('findExtensionByName: extension not found.')
+    }
+    return foundExtension
+  }
+  const getExtensionsSettings = computed<SubsettingsGroup>(() => {
+    const extensions: SettingsGroup | undefined = settings.findSettingsGroupByName('extensions')
     if (!extensions) {
-      throw new Error('getExtensionGroup: "extensions" subsettings group not found.')
+      throw new Error('getExtensionsSettings: "extensions" settings group not found.')
     }
     if (!isSubsettingsGroup(extensions)) {
-      throw new Error('getExtensionsGroup: "extensions is not subsetting group."')
+      throw new Error(
+        'getExtensionsSettings: subsettings not found in "extensions" settings group.'
+      )
     }
     return extensions
   })
 
-  const toggleIsExtensions = () => (extensionsState.isExtensions = !extensionsState.isExtensions)
+  const isExtensions = ref<boolean>(false)
+  const toggleIsExtensions = () => (isExtensions.value = !isExtensions.value)
 
   const toggleExtensionActivity = (extensionId: number) => {
-    const foundExtension = extensionsState.extensionsLinks.find((ext) => ext.id === extensionId)
+    const foundExtension = extensionsLinks.value.find((ext) => ext.id === extensionId)
     if (typeof foundExtension !== 'undefined') {
       foundExtension.active = !foundExtension.active
     } else {
@@ -47,8 +53,11 @@ export const useExtensionsStore = defineStore('extensions', () => {
   }
 
   return {
-    extensionsState,
+    extensionsLinks,
+    findExtensionByName,
     getExtensionsSettings,
+    isPomodoroOpened,
+    isExtensions,
     toggleIsExtensions,
     toggleExtensionActivity,
   }
