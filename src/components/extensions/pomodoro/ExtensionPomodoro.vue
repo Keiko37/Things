@@ -6,20 +6,23 @@ import { useSettingsStore } from '@/stores/settings'
 import { usePomodoroStore } from '@/stores/pomodoro'
 import ProgressRing from '@/components/extensions/pomodoro/ProgressRing.vue'
 import BorderButton from '@/components/BorderButton.vue'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 type TimerMode = 'focus' | 'rest'
 
 const pomodoro = usePomodoroStore()
 const settings = useSettingsStore()
-const { setGroupChecked, findSettingsGroupByName, toggleIsSettings } = settings
+const { setExpandedGroupId, setGroupChecked, findSettingsGroupByName, toggleIsSettings } = settings
 
 const {
   numberOfPomodorosBeforeLongRest,
   getFocusTimerMinutes,
   getRestTimerMinutes,
   getLongRestTimerMinutes,
+  getAlarmOn,
+  getLoopTimerOn,
 } = storeToRefs(pomodoro)
-const { setPomodoroSetting, getAlarmOn, getLoopTimerOn } = pomodoro
+const { setPomodoroSetting } = pomodoro
 
 let isTimerActive = ref<boolean>(false)
 
@@ -100,17 +103,21 @@ function stopTimer() {
   timerFinished.value = true
   percentTimeLeft.value = 100
 }
-
+/** Expand extensions settings group, set pomodoro settings group checked, open settings window. */
 function openSettings() {
-  setGroupChecked(1)
-  const extensionsSettingsGroup = findSettingsGroupByName('extensions')
+  const foundExtensionsGroup = findSettingsGroupByName('extensions')
   const pomodoroSettings = findSettingsGroupByName('pomodoro')
-  if (extensionsSettingsGroup !== undefined && !isSubsettingsGroup(extensionsSettingsGroup)) {
-    throw new Error('openSettings: wrong type of extensions settings group')
+  if (!foundExtensionsGroup) {
+    throw new Error('openSettings: extensions settings group not found.')
   }
-  if (pomodoroSettings) {
-    setGroupChecked(pomodoroSettings.id)
+  if (!isSubsettingsGroup(foundExtensionsGroup)) {
+    throw new Error('openSettings: wrong type of extensions settings group.')
   }
+  if (!pomodoroSettings) {
+    throw new Error('openSettings: pomodoro settings group not found.')
+  }
+  setExpandedGroupId(foundExtensionsGroup.id)
+  setGroupChecked(pomodoroSettings.id)
   toggleIsSettings()
 }
 
@@ -165,37 +172,24 @@ watch(timerFinished, (newValue) => {
     <div class="pomodoro__content z-index" v-if="!isTimerActive">
       <div class="pomodoro-settings">
         <div @click="openSettings" data-title="Set Timers" class="tooltip up-center">
-          <span class="material-icons-outlined material-icons icon-btn md-light md-30">
-            pending_actions
-          </span>
+          <AppIcon class="icon-btn" name="pending_actions" />
         </div>
 
         <div @click="notification()" class="pomodoro__alarm-toggle">
           <div v-if="getAlarmOn" data-title="Alarm notifications enabled" class="tooltip up-center">
-            <span class="icon-btn material-icons material-icons-round md-light md-30"
-              >alarm_on</span
-            >
+            <AppIcon class="icon-btn" name="alarm_on" />
           </div>
-          <div
-            v-if="!getAlarmOn"
-            data-title="Alarm notifications disabled"
-            class="tooltip up-center"
-          >
-            <span
-              class="icon-btn material-icons-round material-icons md-light material-icons-outlined md-30"
-              >alarm_off</span
-            >
+          <div v-else data-title="Alarm notifications disabled" class="tooltip up-center">
+            <AppIcon class="icon-btn" name="alarm_off" />
           </div>
         </div>
 
         <div @click="setPomodoroSetting('loop', !getLoopTimerOn)" class="pomodoro__loop-toggle">
           <div v-if="getLoopTimerOn" data-title="Timer loop enabled" class="tooltip up-center">
-            <span class="icon-btn material-icons material-icons-round md-light md-30">loop</span>
+            <AppIcon class="icon-btn" name="sync" />
           </div>
-          <div v-if="!getLoopTimerOn" data-title="Timer loop disabled" class="tooltip up-center">
-            <span class="icon-btn material-icons material-icons-round md-light md-30"
-              >sync_disabled</span
-            >
+          <div v-else data-title="Timer loop disabled" class="tooltip up-center">
+            <AppIcon class="icon-btn" name="sync_disabled" />
           </div>
         </div>
       </div>
