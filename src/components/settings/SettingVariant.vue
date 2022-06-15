@@ -103,7 +103,7 @@ function decrementNumber() {
   <div class="setting">
     <h1 class="setting__title">{{ setting.title }}</h1>
 
-    <div class="setting__multiple" v-if="isSettingMultiple(setting)">
+    <div v-if="isSettingMultiple(setting)" class="setting__multiple">
       <div v-for="item in setting.values" :key="item.title">
         <input
           class="setting__radio"
@@ -118,7 +118,7 @@ function decrementNumber() {
       </div>
     </div>
 
-    <div class="setting__toggle" v-if="isSettingToggle(setting)">
+    <div v-if="isSettingToggle(setting)" class="setting__toggle">
       <input
         :checked="setting.selectedValue"
         :id="'checkbox__' + setting.title"
@@ -166,8 +166,8 @@ input[type='number']::-webkit-outer-spin-button {
 .setting {
   display: flex;
   justify-content: space-between;
-  width: 100%;
   align-items: center;
+  width: 100%;
   padding-bottom: 5px;
   margin: 0 0 15px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -193,13 +193,13 @@ input[type='number']::-webkit-outer-spin-button {
   &__number {
     position: relative;
     display: flex;
+    align-items: center;
   }
   &__number-input {
     background-color: transparent;
     color: var(--text-color);
     width: 1.2rem;
-    height: 2rem;
-    margin: 0 2px;
+    margin: 0 3px;
     text-align: center;
     cursor: default;
     user-select: none;
@@ -207,12 +207,6 @@ input[type='number']::-webkit-outer-spin-button {
   &__number-button {
     background-color: transparent;
     border-radius: 50%;
-    height: 100%;
-    width: 1.6rem;
-    height: 1.7rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
