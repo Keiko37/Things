@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, toRefs } from 'vue'
 import { useBookmarksStore } from '@/stores/bookmarks'
-import BorderButton from '@/components/BorderButton.vue'
+import BorderButton from '@/components/global/BorderButton.vue'
 import { storeToRefs } from 'pinia'
 
 const bookmarksStore = useBookmarksStore()

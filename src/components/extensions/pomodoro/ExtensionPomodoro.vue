@@ -5,7 +5,7 @@ import { isSubsettingsGroup } from '@/types/SettingsState'
 import { useSettingsStore } from '@/stores/settings'
 import { usePomodoroStore } from '@/stores/pomodoro'
 import ProgressRing from '@/components/extensions/pomodoro/ProgressRing.vue'
-import BorderButton from '@/components/BorderButton.vue'
+import BorderButton from '@/components/global/BorderButton.vue'
 import AppIcon from '@/components/global/AppIcon.vue'
 
 type TimerMode = 'focus' | 'rest'
@@ -123,12 +123,12 @@ function openSettings() {
 
 function notification() {
   if (Notification.permission === 'granted') {
-    setPomodoroSetting('notifications', !getAlarmOn)
+    setPomodoroSetting('notifications', !getAlarmOn.value)
   }
   if (Notification.permission === 'default') {
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
-        setPomodoroSetting('notifications', !getAlarmOn)
+        setPomodoroSetting('notifications', !getAlarmOn.value)
       }
     })
   }
@@ -137,8 +137,8 @@ function notification() {
 watch(timerFinished, (newValue) => {
   if (!newValue) return
   if (!isTimerActive.value) return
-  let loop = getLoopTimerOn
-  let notifications = getAlarmOn
+  let loop = getLoopTimerOn.value
+  let notifications = getAlarmOn.value
   let modeForMessage = timerMode.value === 'focus' ? 'rest' : 'focus'
   if (timerId.value !== null) {
     clearInterval(timerId.value)
@@ -194,18 +194,17 @@ watch(timerFinished, (newValue) => {
         </div>
       </div>
 
-      <BorderButton @click="startTimer" class="timer-button" text="start" />
+      <BorderButton @click="startTimer" class="timer-button"> start </BorderButton>
     </div>
     <div v-if="isTimerActive" class="pomodoro__content z-index">
       <div class="pomodoro__condition">{{ timerMode }}</div>
       <div class="pomodoro__timer">{{ timerValue }}</div>
-      <BorderButton v-if="!timerFinished" @click="stopTimer" class="timer-button" text="stop" />
-      <BorderButton
-        v-if="timerFinished"
-        @click="round"
-        class="timer-button"
-        :text="timerMode === 'focus' ? 'rest' : 'focus'"
-      />
+      <BorderButton v-if="!timerFinished" @click="stopTimer" class="timer-button">
+        stop
+      </BorderButton>
+      <BorderButton v-if="timerFinished" @click="round" class="timer-button">
+        {{ timerMode === 'focus' ? 'rest' : 'focus' }}
+      </BorderButton>
     </div>
   </div>
 </template>
