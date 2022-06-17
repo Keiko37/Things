@@ -1,34 +1,25 @@
 <script setup lang="ts">
 import { useBookmarksStore } from '@/stores/bookmarks'
-import Bookmark from '@/components/bookmarks/BookmarkItem.vue'
+import BookmarkItem from '@/components/bookmarks/BookmarkItem.vue'
+import { storeToRefs } from 'pinia'
 
 const bookmarksStore = useBookmarksStore()
+const { bookmarks } = storeToRefs(bookmarksStore)
+const { toggleIsBookmarkEditing } = bookmarksStore
 </script>
 
 <template>
-  <div
-    v-if="bookmarksStore.bookmarksState.bookmarks.length > 0"
-    @click="bookmarksStore.toggleBookmarkEditing()"
-    class="add-bookmark"
-  >
+  <div v-if="bookmarks.length > 0" @click="toggleIsBookmarkEditing()" class="add-bookmark">
     <span
       class="material-icons material-icons-round md-light md-24 bookmarks-icon icon-btn add-bookmark__icon"
       >add</span
     >
   </div>
-  <p
-    v-if="bookmarksStore.bookmarksState.bookmarks.length <= 0"
-    @click="bookmarksStore.toggleBookmarkEditing()"
-    class="no-bookmarks"
-  >
+  <p v-if="bookmarks.length <= 0" @click="toggleIsBookmarkEditing()" class="no-bookmarks">
     Add first bookmark
   </p>
   <ul class="bookmarks__list scroll-ui">
-    <Bookmark
-      v-for="bookmark in bookmarksStore.bookmarksState.bookmarks"
-      :key="bookmark.id"
-      :bookmark="bookmark"
-    />
+    <BookmarkItem v-for="bookmark in bookmarks" :key="bookmark.id" :bookmark="bookmark" />
   </ul>
 </template>
 

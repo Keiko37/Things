@@ -1,72 +1,76 @@
 import { defineStore } from 'pinia'
-import { reactive, watch } from 'vue'
-import type { BookmarksState, Bookmark } from '@/types/BookmarksState'
+import { ref, watch } from 'vue'
+import type { Bookmark } from '@/types/BookmarksState'
 
 export const useBookmarksStore = defineStore('bookmarks', () => {
-  const bookmarksState: BookmarksState = reactive({
-    isBookmarks: false,
-    isBookmarkEditing: false,
-    bookmarks: [],
-    moreModalNumber: 0,
-    editableBookmark: null,
-  })
-
+  const isBookmarks = ref<boolean>(false)
   const toggleIsBookmarks = (value?: boolean) => {
     if (typeof value === 'undefined') {
-      bookmarksState.isBookmarks = !bookmarksState.isBookmarks
+      isBookmarks.value = !isBookmarks.value
     } else {
-      bookmarksState.isBookmarks = value
+      isBookmarks.value = value
     }
   }
-  const toggleBookmarkEditing = () =>
-    (bookmarksState.isBookmarkEditing = !bookmarksState.isBookmarkEditing)
 
+  const isBookmarkEditing = ref<boolean>(false)
+  const toggleIsBookmarkEditing = (value?: boolean) => {
+    if (typeof value === 'undefined') {
+      isBookmarkEditing.value = !isBookmarkEditing.value
+    } else {
+      isBookmarkEditing.value = value
+    }
+  }
+
+  const bookmarks = ref<Bookmark[]>([])
   const setAllBookmarks = (newValue: Bookmark[]) => {
-    bookmarksState.bookmarks = newValue
+    bookmarks.value = newValue
   }
   const addToBookmarks = (bookmark: Bookmark) => {
-    bookmarksState.bookmarks.push(bookmark)
+    bookmarks.value.push(bookmark)
   }
   const removeFromBookmarks = (bookmark: Bookmark) => {
-    bookmarksState.bookmarks.splice(bookmarksState.bookmarks.indexOf(bookmark), 1)
+    bookmarks.value.splice(bookmarks.value.indexOf(bookmark), 1)
   }
-
-  const setMoreModalNumber = (bookmarkId: number) => {
-    bookmarksState.moreModalNumber = bookmarkId
-  }
-  const setEditableBookmark = (bookmark: Bookmark | null) => {
-    bookmarksState.editableBookmark = bookmark
-  }
-
   const updateBookmark = (oldBookmark: Bookmark, newBookmark: Bookmark) => {
-    const oldBookmarkIndex = bookmarksState.bookmarks.indexOf(oldBookmark)
-    bookmarksState.bookmarks[oldBookmarkIndex] = newBookmark
+    const oldBookmarkIndex = bookmarks.value.indexOf(oldBookmark)
+    bookmarks.value[oldBookmarkIndex] = newBookmark
   }
+
+  const moreModalNumber = ref<number>(0)
+  const editableBookmark = ref<Bookmark | null>(null)
   const toggleBookmarks = (bool: boolean) => {
-    if (bookmarksState.isBookmarks) {
+    if (isBookmarks.value) {
       setMoreModalNumber(0)
     }
-    if (bookmarksState.isBookmarks && bookmarksState.isBookmarkEditing) {
-      toggleBookmarkEditing()
+    if (isBookmarks.value && isBookmarkEditing.value) {
+      toggleIsBookmarkEditing()
     }
     toggleIsBookmarks(bool)
   }
+  const setMoreModalNumber = (bookmarkId: number) => {
+    moreModalNumber.value = bookmarkId
+  }
+  const setEditableBookmark = (bookmark: Bookmark | null) => {
+    editableBookmark.value = bookmark
+  }
 
-  watch(
-    () => bookmarksState.bookmarks,
-    () => localStorage.setItem('bookmarks', JSON.stringify(bookmarksState.bookmarks)),
-    { flush: 'post' }
-  )
+  watch(bookmarks, () => localStorage.setItem('bookmarks', JSON.stringify(bookmarks.value)), {
+    flush: 'post',
+  })
   return {
-    bookmarksState,
+    isBookmarks,
     toggleIsBookmarks,
-    toggleBookmarkEditing,
+    isBookmarkEditing,
+    toggleIsBookmarkEditing,
+    bookmarks,
     setAllBookmarks,
     addToBookmarks,
     removeFromBookmarks,
+    updateBookmark,
+    moreModalNumber,
+    editableBookmark,
+    toggleBookmarks,
     setMoreModalNumber,
     setEditableBookmark,
-    updateBookmark,
-    toggleBookmarks,
   }
 })

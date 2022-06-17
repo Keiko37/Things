@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useClickOutside } from '@/composables/clickOutside'
 import { useSettingsStore } from '@/stores/settings'
 import AppIcon from '@/components/global/AppIcon.vue'
 import SettingsNavItem from '@/components/settings/SettingsNavItem.vue'
 import SettingsView from '@/components/settings/SettingsView.vue'
-import { computed, watch } from 'vue'
 
 const settings = useSettingsStore()
 const { appSettings, isSettings, checkedGroupId, expandedGroupId } = storeToRefs(settings)
@@ -22,6 +23,9 @@ watch(isSettings, (newValue) => {
     !checkedGroupId.value && settings.setGroupChecked(checkedGroupId.value || 1)
   }
 })
+
+const clickOutside = useClickOutside()
+const { vClickOutside } = clickOutside
 </script>
 
 <template>
@@ -29,7 +33,7 @@ watch(isSettings, (newValue) => {
     <AppIcon name="settings" />
   </span>
   <transition name="animation">
-    <div v-if="isSettings" class="settings scroll-ui">
+    <div v-if="isSettings" class="settings scroll-ui" v-click-outside="settings.toggleIsSettings">
       <div class="settings__header">
         <h1 class="settings__title">Settings</h1>
       </div>

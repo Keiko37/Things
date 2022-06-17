@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import { toRefs } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { Bookmark } from '@/types/BookmarksState'
 import { useBookmarksStore } from '@/stores/bookmarks'
 
 const bookmarksStore = useBookmarksStore()
-const { bookmarksState } = storeToRefs(bookmarksStore)
-const { moreModalNumber } = toRefs(bookmarksState.value)
+const { moreModalNumber } = storeToRefs(bookmarksStore)
+const { setMoreModalNumber, setEditableBookmark, toggleIsBookmarkEditing, removeFromBookmarks } =
+  bookmarksStore
 
 const props = defineProps<{ bookmark: Bookmark }>()
 
 function toggleMoreActive() {
   if (moreModalNumber.value === 0 || moreModalNumber.value !== props.bookmark.id) {
-    bookmarksStore.setMoreModalNumber(props.bookmark.id)
+    setMoreModalNumber(props.bookmark.id)
     return
   }
   if (moreModalNumber.value !== 0 && moreModalNumber.value === props.bookmark.id) {
-    bookmarksStore.setMoreModalNumber(0)
+    setMoreModalNumber(0)
     return
   }
 }
 
 function editBookmark() {
-  bookmarksStore.setMoreModalNumber(0)
-  bookmarksStore.setEditableBookmark(props.bookmark)
-  bookmarksStore.toggleBookmarkEditing()
+  setMoreModalNumber(0)
+  setEditableBookmark(props.bookmark)
+  toggleIsBookmarkEditing()
 }
 </script>
 
@@ -42,7 +42,7 @@ function editBookmark() {
         >edit</span
       >
       <span
-        @click="bookmarksStore.removeFromBookmarks(bookmark)"
+        @click="removeFromBookmarks(bookmark)"
         class="material-icons material-icons-round md-light more__icon icon-btn md-18"
         >delete</span
       >

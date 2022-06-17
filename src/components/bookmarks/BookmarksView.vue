@@ -1,20 +1,26 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import type { Bookmark } from '@/types/BookmarksState'
 import { useBookmarksStore } from '@/stores/bookmarks'
-import AppIcon from '../global/AppIcon.vue'
+import { useClickOutside } from '@/composables/clickOutside'
+import AppIcon from '@/components/global/AppIcon.vue'
 import EditBookmark from '@/components/bookmarks/EditBookmark.vue'
 import BookmarksList from '@/components/bookmarks/BookmarksList.vue'
 
 const bookmarksStore = useBookmarksStore()
+const { isBookmarks, isBookmarkEditing } = storeToRefs(bookmarksStore)
 
 const savedBookmarks = localStorage.getItem('bookmarks')
 
 if (savedBookmarks !== null) {
   let parsedBookmarks: Bookmark[] = JSON.parse(savedBookmarks)
-  if (parsedBookmarks) {
+  if (Array.isArray(parsedBookmarks) && parsedBookmarks.length > 0) {
     bookmarksStore.setAllBookmarks(parsedBookmarks)
   }
 }
+
+const clickOutside = useClickOutside()
+const { vClickOutside } = clickOutside
 
 function switchBookmarksWindow() {
   bookmarksStore.toggleIsBookmarks()
@@ -28,8 +34,8 @@ function switchBookmarksWindow() {
   >
     <AppIcon name="bookmarks" />
   </span>
-  <div v-if="bookmarksStore.bookmarksState.isBookmarks" class="bookmarks">
-    <EditBookmark v-if="bookmarksStore.bookmarksState.isBookmarkEditing" key="edit" />
+  <div v-if="isBookmarks" class="bookmarks" v-click-outside="switchBookmarksWindow">
+    <EditBookmark v-if="isBookmarkEditing" key="edit" />
     <BookmarksList v-else key="list" />
   </div>
 </template>

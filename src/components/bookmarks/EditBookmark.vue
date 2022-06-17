@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref, toRefs } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useBookmarksStore } from '@/stores/bookmarks'
 import BorderButton from '@/components/global/BorderButton.vue'
 import { storeToRefs } from 'pinia'
 
 const bookmarksStore = useBookmarksStore()
-const { bookmarksState } = storeToRefs(bookmarksStore)
-const { editableBookmark } = toRefs(bookmarksState.value)
+const { editableBookmark } = storeToRefs(bookmarksStore)
+const { toggleIsBookmarkEditing, setEditableBookmark, addToBookmarks, updateBookmark } =
+  bookmarksStore
 
 function backToList() {
-  bookmarksStore.toggleBookmarkEditing()
-  bookmarksStore.setEditableBookmark(null)
+  toggleIsBookmarkEditing()
+  setEditableBookmark(null)
 }
 
 const name = ref<string>('')
@@ -38,13 +39,13 @@ function addBookmark() {
     icon: bookmarkIcon,
   }
   if (editableBookmark.value !== null) {
-    bookmarksStore.updateBookmark(editableBookmark.value, newBookmark)
-    bookmarksStore.setEditableBookmark(null)
-    bookmarksStore.toggleBookmarkEditing()
+    updateBookmark(editableBookmark.value, newBookmark)
+    setEditableBookmark(null)
+    toggleIsBookmarkEditing()
     return
   }
-  bookmarksStore.addToBookmarks(newBookmark)
-  bookmarksStore.toggleBookmarkEditing()
+  addToBookmarks(newBookmark)
+  toggleIsBookmarkEditing()
 }
 
 function buildIconUrl(url: string) {

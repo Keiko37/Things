@@ -8,7 +8,13 @@ defineProps<{ bookmark: Bookmark }>()
 <template>
   <li class="bookmark">
     <a :href="bookmark.link" class="bookmark__link">
-      <img :src="bookmark.icon" class="bookmark__icon" alt="bookmark icon" height="16" width="16" />
+      <img
+        :src="bookmark.icon"
+        class="bookmark__icon"
+        :alt="bookmark.name + 'icon'"
+        height="16"
+        width="16"
+      />
       <span class="bookmark__title">{{ bookmark.name }}</span>
     </a>
     <BookmarkActions :bookmark="bookmark" />

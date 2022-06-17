@@ -9,4 +9,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
+/** Click outside global directive */
+// app.directive('click-outside', {
+// })
+
 app.mount('#app')
