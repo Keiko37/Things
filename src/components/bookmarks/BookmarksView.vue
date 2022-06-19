@@ -24,6 +24,9 @@ const { vClickOutside } = clickOutside
 
 function switchBookmarksWindow() {
   bookmarksStore.toggleIsBookmarks()
+  if (isBookmarkEditing.value) {
+    bookmarksStore.toggleIsBookmarkEditing(false)
+  }
 }
 </script>
 
@@ -45,7 +48,7 @@ span {
   height: 7%;
 }
 .bookmarks {
-  min-width: 180px;
+  min-width: 190px;
   max-height: 70%;
   z-index: 10;
   padding: 5px 0 10px 0;

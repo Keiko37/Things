@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useBookmarksStore } from '@/stores/bookmarks'
 import BorderButton from '@/components/global/BorderButton.vue'
-import { storeToRefs } from 'pinia'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 const bookmarksStore = useBookmarksStore()
 const { editableBookmark } = storeToRefs(bookmarksStore)
@@ -83,11 +84,8 @@ onMounted(() => {
 
 <template>
   <div class="bookmarks__edit">
-    <div @click="backToList" class="bookmarks__back">
-      <span
-        class="material-icons material-icons-round md-light md-24 bookmarks-icon icon-btn add-bookmark__icon"
-        >arrow_back</span
-      >
+    <div @click="backToList" class="icon-btn">
+      <AppIcon name="arrow_back" />
     </div>
     <form class="form">
       <div class="input-group">
@@ -104,7 +102,8 @@ onMounted(() => {
         @click.enter.prevent="addBookmark"
         class="submit-button"
         :text="editableBookmark ? 'edit link' : 'add link'"
-      />
+        >submit</BorderButton
+      >
     </form>
   </div>
 </template>
@@ -135,7 +134,7 @@ onMounted(() => {
     background-color: transparent;
     border-bottom: 1px solid var(--border-color-active);
     outline: none;
-    color: (--text-color);
+    color: var(--text-color);
     caret-color: var(--border-color);
     margin-bottom: 15px;
     transition: all 0.4s;
@@ -144,7 +143,7 @@ onMounted(() => {
       border-color: var(--border-color-active);
     }
     &:focus ~ label {
-      color: #fff;
+      color: var(--text-color);
     }
   }
   & label {

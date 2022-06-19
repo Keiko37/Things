@@ -28,7 +28,7 @@ defineProps<{ bookmark: Bookmark }>()
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  &:hover .more-actions {
+  &:hover .actions {
     visibility: visible;
   }
   &__link {

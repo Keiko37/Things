@@ -56,6 +56,7 @@ export const useBookmarksStore = defineStore('bookmarks', () => {
 
   watch(bookmarks, () => localStorage.setItem('bookmarks', JSON.stringify(bookmarks.value)), {
     flush: 'post',
+    deep: true,
   })
   return {
     isBookmarks,

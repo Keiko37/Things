@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { useBookmarksStore } from '@/stores/bookmarks'
 import BookmarkItem from '@/components/bookmarks/BookmarkItem.vue'
-import { storeToRefs } from 'pinia'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 const bookmarksStore = useBookmarksStore()
 const { bookmarks } = storeToRefs(bookmarksStore)
@@ -9,11 +10,12 @@ const { toggleIsBookmarkEditing } = bookmarksStore
 </script>
 
 <template>
-  <div v-if="bookmarks.length > 0" @click="toggleIsBookmarkEditing()" class="add-bookmark">
-    <span
-      class="material-icons material-icons-round md-light md-24 bookmarks-icon icon-btn add-bookmark__icon"
-      >add</span
-    >
+  <div
+    v-if="bookmarks.length > 0"
+    @click="toggleIsBookmarkEditing()"
+    class="icon-btn add-bookmark__icon"
+  >
+    <AppIcon name="add" />
   </div>
   <p v-if="bookmarks.length <= 0" @click="toggleIsBookmarkEditing()" class="no-bookmarks">
     Add first bookmark
@@ -27,15 +29,11 @@ const { toggleIsBookmarkEditing } = bookmarksStore
 .add-bookmark {
   width: 100%;
   cursor: pointer;
-
   display: flex;
   flex-direction: column;
-
   &__icon {
     align-self: flex-end;
-  }
-  &:hover > &__icon {
-    opacity: 0.8;
+    margin-right: 5px;
   }
 }
 .no-bookmarks {

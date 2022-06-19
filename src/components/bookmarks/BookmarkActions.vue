@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import type { Bookmark } from '@/types/BookmarksState'
 import { useBookmarksStore } from '@/stores/bookmarks'
+import AppIcon from '@/components/global/AppIcon.vue'
 
 const bookmarksStore = useBookmarksStore()
 const { moreModalNumber } = storeToRefs(bookmarksStore)
@@ -29,36 +30,35 @@ function editBookmark() {
 </script>
 
 <template>
-  <div class="more-actions">
-    <span
-      @click="toggleMoreActive"
-      class="material-icons material-icons-round md-light more__icon icon-btn md-18"
-      >more_horiz</span
-    >
+  <div class="actions">
+    <div @click="toggleMoreActive" class="icon-btn">
+      <AppIcon name="more_horiz" />
+    </div>
     <div v-if="bookmark.id === moreModalNumber" class="more__modal">
-      <span
-        @click="editBookmark"
-        class="material-icons material-icons-round md-light more__icon icon-btn md-18"
-        >edit</span
-      >
-      <span
-        @click="removeFromBookmarks(bookmark)"
-        class="material-icons material-icons-round md-light more__icon icon-btn md-18"
-        >delete</span
-      >
+      <div @click="editBookmark" class="icon-btn">
+        <AppIcon name="edit" :size="18" />
+      </div>
+      <div @click="removeFromBookmarks(bookmark)" class="icon-btn">
+        <AppIcon name="delete" :size="18" />
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.more-actions {
+.actions {
+  margin-right: 5px;
   visibility: hidden;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 .more__modal {
   visibility: visible;
-  top: 0;
-  left: -40px;
   position: absolute;
+  right: 25px;
+  min-width: 40px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
