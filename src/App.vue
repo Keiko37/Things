@@ -1,47 +1,42 @@
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '@/stores/settings'
+import type { SettingsGroupKind } from '@/types/SettingsState'
+
+const settings = useSettingsStore()
+const { appSettings, defaultSettings } = storeToRefs(settings)
+
+function loadSettingsFromStorage(): SettingsGroupKind[] | null {
+  let settingsFromStorage = localStorage.getItem('appSettings')
+  return settingsFromStorage !== null ? JSON.parse(settingsFromStorage) : null
+}
+
+onMounted(() => {
+  const parsedSettings = loadSettingsFromStorage()
+
+  if (
+    parsedSettings === null ||
+    typeof parsedSettings !== 'object' ||
+    (Array.isArray(parsedSettings) && parsedSettings.length === 0)
+  ) {
+    localStorage.setItem('appSettings', JSON.stringify(settings.defaultSettings))
+  }
+
+  if (appSettings.value.length === 0) {
+    const settingsFromStorage = localStorage.getItem('appSettings')
+    appSettings.value = settingsFromStorage
+      ? JSON.parse(settingsFromStorage)
+      : defaultSettings.value
+  }
+})
+</script>
+
 <template>
   <router-view />
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
-
-export default {
-  computed: {
-    ...mapGetters(['getDefaultSettings', 'getAppSettings']),
-  },
-  methods: {
-    ...mapActions(['setAppSettings']),
-  },
-  mounted() {
-    let settingsType;
-    try {
-      settingsType = typeof JSON.parse(localStorage.getItem('appSettings'));
-    } catch (e) {
-      localStorage.setItem(
-        'appSettings',
-        JSON.stringify(this.getDefaultSettings)
-      );
-    }
-
-    if (!localStorage.getItem('appSettings') || settingsType !== 'object') {
-      localStorage.setItem(
-        'appSettings',
-        JSON.stringify(this.getDefaultSettings)
-      );
-    }
-    if (this.getAppSettings.length === 0) {
-      const settingsLS = JSON.parse(localStorage.getItem('appSettings'));
-      this.setAppSettings(settingsLS);
-    }
-  },
-};
-</script>
-
 <style lang="scss">
-// @import 'assets/css/null.css';
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600&display=swap');
-// @import 'assets/scss/variables.scss';
-
 body {
   min-width: 100vw;
   min-height: 100vh;

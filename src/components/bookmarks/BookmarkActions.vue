@@ -1,98 +1,64 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import type { Bookmark } from '@/types/BookmarksState'
+import { useBookmarksStore } from '@/stores/bookmarks'
+import AppIcon from '@/components/global/AppIcon.vue'
+
+const bookmarksStore = useBookmarksStore()
+const { moreModalNumber } = storeToRefs(bookmarksStore)
+const { setMoreModalNumber, setEditableBookmark, toggleIsBookmarkEditing, removeFromBookmarks } =
+  bookmarksStore
+
+const props = defineProps<{ bookmark: Bookmark }>()
+
+function toggleMoreActive() {
+  if (moreModalNumber.value === 0 || moreModalNumber.value !== props.bookmark.id) {
+    setMoreModalNumber(props.bookmark.id)
+    return
+  }
+  if (moreModalNumber.value !== 0 && moreModalNumber.value === props.bookmark.id) {
+    setMoreModalNumber(0)
+    return
+  }
+}
+
+function editBookmark() {
+  setMoreModalNumber(0)
+  setEditableBookmark(props.bookmark)
+  toggleIsBookmarkEditing()
+}
+</script>
+
 <template>
-  <div class="more-actions">
-    <span
-      @click="toggleMoreActive"
-      class="
-        material-icons material-icons-round
-        md-light
-        more__icon
-        icon-btn
-        md-18
-      "
-      >more_horiz</span
-    >
-    <div v-if="bookmark.id === getMoreModalNumber" class="more__modal">
-      <span
-        @click="editBookmark"
-        class="
-          material-icons material-icons-round
-          md-light
-          more__icon
-          icon-btn
-          md-18
-        "
-        >edit</span
-      >
-      <span
-        @click="deleteBookmark"
-        class="
-          material-icons material-icons-round
-          md-light
-          more__icon
-          icon-btn
-          md-18
-        "
-        >delete</span
-      >
+  <div class="actions">
+    <div @click="toggleMoreActive" class="icon-btn">
+      <AppIcon name="more_horiz" />
+    </div>
+    <div v-if="bookmark.id === moreModalNumber" class="more__modal">
+      <div @click="editBookmark" class="icon-btn">
+        <AppIcon name="edit" :size="18" />
+      </div>
+      <div @click="removeFromBookmarks(bookmark)" class="icon-btn">
+        <AppIcon name="delete" :size="18" />
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import { mapActions, mapGetters, mapMutations } from 'vuex';
-export default {
-  name: 'BookmarkActions',
-  props: {
-    bookmark: Object,
-  },
-  computed: {
-    ...mapGetters(['getMoreModalNumber']),
-  },
-  methods: {
-    ...mapMutations([
-      'setMoreModalNumber',
-      'toggleBookmarkEditing',
-      'setEditableBookmark',
-      'removeFromBookmarks',
-    ]),
-    ...mapActions(['removeBookmark']),
-    toggleMoreActive() {
-      if (
-        this.getMoreModalNumber === 0 ||
-        this.getMoreModalNumber !== this.bookmark.id
-      ) {
-        this.setMoreModalNumber(this.bookmark.id);
-        return;
-      }
-      if (
-        this.getMoreModalNumber !== 0 &&
-        this.getMoreModalNumber === this.bookmark.id
-      ) {
-        this.setMoreModalNumber(0);
-        return;
-      }
-    },
-    editBookmark() {
-      this.setMoreModalNumber(0);
-      this.setEditableBookmark(this.bookmark);
-      this.toggleBookmarkEditing();
-    },
-    deleteBookmark() {
-      this.removeBookmark(this.bookmark);
-    },
-  },
-};
-</script>
-
 <style lang="scss" scoped>
-.more-actions {
+.actions {
+  margin-right: 5px;
   visibility: hidden;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 .more__modal {
   visibility: visible;
-  top: 0;
-  left: -40px;
   position: absolute;
+  right: 25px;
+  min-width: 40px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
