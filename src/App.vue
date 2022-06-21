@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import type { SettingsGroupKind } from '@/types/SettingsState'
+import LogoLoader from './components/LogoLoader.vue'
 
 const settings = useSettingsStore()
 const { appSettings, defaultSettings } = storeToRefs(settings)
@@ -12,7 +13,9 @@ function loadSettingsFromStorage(): SettingsGroupKind[] | null {
   return settingsFromStorage !== null ? JSON.parse(settingsFromStorage) : null
 }
 
+const isAppLoading = ref(true)
 onMounted(() => {
+  window.setTimeout(() => (isAppLoading.value = false), 2000)
   const parsedSettings = loadSettingsFromStorage()
 
   if (
@@ -33,6 +36,9 @@ onMounted(() => {
 </script>
 
 <template>
+  <Transition name="fade">
+    <LogoLoader v-if="isAppLoading" />
+  </Transition>
   <router-view />
 </template>
 
@@ -45,5 +51,15 @@ body {
 #app {
   width: 100%;
   height: 100%;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1.1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

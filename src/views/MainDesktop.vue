@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// import { storeToRefs } from 'pinia'
-// import { useSettingsStore } from '@/stores/settings'
-// import { useBookmarksStore } from '@/stores/bookmarks'
 import { useExtensionsStore } from '@/stores/extensions'
 import Clock from '@/components/AppClock.vue'
 import Fullscreen from '@/components/FullscreenButton.vue'
@@ -10,38 +7,7 @@ import Bookmarks from '@/components/bookmarks/BookmarksView.vue'
 import Extensions from '@/components/extensions/AppExtensions.vue'
 import Pomodoro from '@/components/extensions/pomodoro/ExtensionPomodoro.vue'
 
-// const settings = useSettingsStore()
-// const bookmarksStore = useBookmarksStore()
-// const { isBookmarks } = storeToRefs(bookmarksStore)
 const extensions = useExtensionsStore()
-
-// function closeWindows(event: Event) {
-//   let settingsOnFocus = focusWindow(event, 'settings', 'desktop')
-//   let bookmarksOnFocus = focusWindow(event, 'bookmarks', 'desktop')
-//   if (!settingsOnFocus && settings.isSettings) {
-//     settings.toggleIsSettings()
-//   }
-//   console.log(bookmarksOnFocus)
-//   if (!bookmarksOnFocus && isBookmarks.value) {
-//     bookmarksStore.toggleBookmarks(false)
-//   }
-// }
-
-// function focusWindow(event: Event, classForFinding: string, stopClass: string) {
-//   let classFind = false
-//   let currentElement = event.target
-//   while (
-//     currentElement !== null &&
-//     !Array(...(currentElement as Element).classList).includes(stopClass) &&
-//     !classFind
-//   ) {
-//     if (Array(...(currentElement as Element).classList).includes(classForFinding)) {
-//       return true
-//     }
-//     currentElement = (currentElement as Element).parentElement
-//   }
-//   return false
-// }
 </script>
 
 <template>
