@@ -9,10 +9,16 @@
 </template>
 <style scoped>
 #wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
   height: 100vh;
+  width: 100vw;
+  z-index: 999;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #fff;
 }
 
 #logo {

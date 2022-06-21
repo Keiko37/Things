@@ -19,6 +19,11 @@ const updateCurrentTime = () => {
   }`
 }
 
+/**
+ * the first updateCurrentTime() call is needed
+ * for the initial render with the defined content(time value)
+ */
+updateCurrentTime()
 onMounted(() => {
   clockIntervalId.value = window.setInterval(updateCurrentTime, 1000)
 })
